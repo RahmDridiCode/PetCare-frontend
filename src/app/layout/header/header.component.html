@@ -1,0 +1,76 @@
+<header class="pc-header">
+  <!-- ── LOGO ── -->
+  <a routerLink="/" class="pc-logo">
+    <span class="pc-logo__icon">🐾</span>
+    <span class="pc-logo__text">PetCare</span>
+  </a>
+
+  <!-- ── BARRE DE RECHERCHE ── -->
+  <div class="pc-search-wrap">
+    <div class="pc-search-box">
+      <mat-icon class="pc-search-icon">search</mat-icon>
+      <input
+        class="pc-search-input"
+        [(ngModel)]="searchQuery"
+        (input)="search()"
+        placeholder="Rechercher un membre..."
+        aria-label="Recherche"
+      />
+      <button *ngIf="searchQuery" mat-icon-button class="pc-search-clear" (click)="searchQuery=''; searchResults=[]">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+
+    <!-- Résultats de recherche -->
+    <div class="pc-search-results" *ngIf="searchResults?.length">
+      <a
+        *ngFor="let u of searchResults"
+        [routerLink]="['/profile', u._id]"
+        class="pc-search-result"
+        (click)="searchResults = []"
+      >
+        <img [src]="u.image || 'assets/images/avatar.jpg'" alt="avatar" class="pc-search-avatar" />
+        <div>
+          <div class="pc-search-name">{{ u.fname }} {{ u.lname }}</div>
+          <div class="pc-search-role">{{ u.role || 'Membre' }}</div>
+        </div>
+      </a>
+    </div>
+  </div>
+
+  <!-- ── ACTIONS DROITE ── -->
+  <div class="pc-nav-right">
+    <ng-container *ngIf="isAuthenticated && user; else guestTpl">
+      <!-- Lien profil -->
+      <a routerLink="/profile" class="pc-user-chip" title="Mon profil">
+        <img [src]="user.image || 'assets/images/avatar.jpg'" alt="avatar" class="pc-user-avatar" />
+        <div class="pc-user-info">
+          <span class="pc-user-name">{{ user.fname }} {{ user.lname }}</span>
+          <span class="pc-user-role">{{ user.role || 'Membre' }}</span>
+        </div>
+      </a>
+
+      <!-- Menu kebab -->
+      <button mat-icon-button [matMenuTriggerFor]="userMenu" class="pc-menu-btn" aria-label="Menu">
+        <mat-icon>expand_more</mat-icon>
+      </button>
+      <mat-menu #userMenu="matMenu" class="pc-mat-menu">
+        <a mat-menu-item routerLink="/profile">
+          <mat-icon>person</mat-icon><span>Mon profil</span>
+        </a>
+        <a mat-menu-item routerLink="/profile/edit">
+          <mat-icon>edit</mat-icon><span>Modifier profil</span>
+        </a>
+        <mat-divider></mat-divider>
+        <button mat-menu-item (click)="logout()" class="logout-item">
+          <mat-icon>logout</mat-icon><span>Se déconnecter</span>
+        </button>
+      </mat-menu>
+    </ng-container>
+
+    <ng-template #guestTpl>
+      <a mat-button routerLink="/login" class="pc-btn-ghost">Se connecter</a>
+      <a mat-raised-button routerLink="/signup" class="pc-btn-primary">S'inscrire</a>
+    </ng-template>
+  </div>
+</header>

@@ -1,0 +1,65 @@
+<div class="edit-profile-container">
+  <mat-card class="edit-card">
+    <mat-card-header>
+      <mat-card-title>Modifier le profil</mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content>
+      <div class="avatar-section">
+        <img
+          [src]="imagePreview || user?.image || 'assets/images/avatar.jpg'"
+          alt="Avatar"
+          class="avatar-preview"
+        />
+        <button mat-stroked-button (click)="fileInput.click()">
+          <mat-icon>photo_camera</mat-icon>
+          Changer la photo
+        </button>
+        <input #fileInput type="file" accept="image/*" hidden (change)="onImagePicked($event)" />
+      </div>
+
+      <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
+        <div class="row">
+          <mat-form-field appearance="outline" class="half-width">
+            <mat-label>Prénom</mat-label>
+            <input matInput formControlName="fname" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="half-width">
+            <mat-label>Nom</mat-label>
+            <input matInput formControlName="lname" />
+          </mat-form-field>
+        </div>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Email</mat-label>
+          <input matInput formControlName="email" type="email" />
+          @if (profileForm.get('email')?.hasError('email') && profileForm.get('email')?.touched) {
+            <mat-error>Email invalide</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Téléphone</mat-label>
+          <input matInput formControlName="phone" />
+          @if (profileForm.get('phone')?.hasError('pattern') && profileForm.get('phone')?.touched) {
+            <mat-error>8 chiffres requis</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Date de naissance</mat-label>
+          <input matInput formControlName="birthdate" type="date" />
+        </mat-form-field>
+
+        <div class="actions">
+          <button mat-raised-button color="primary" type="submit" [disabled]="profileForm.invalid">
+            Enregistrer
+          </button>
+          <a mat-stroked-button routerLink="/profile">Annuler</a>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>
+

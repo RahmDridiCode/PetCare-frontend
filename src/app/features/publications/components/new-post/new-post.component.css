@@ -1,0 +1,24 @@
+.full-width {
+  width: 100%;
+  margin-bottom: 12px;
+}
+
+.file-upload {
+  margin-bottom: 16px;
+}
+
+.image-previews {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+.preview-img {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+}
+

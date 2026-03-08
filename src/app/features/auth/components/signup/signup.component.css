@@ -1,0 +1,39 @@
+.signup-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 80vh;
+  padding: 20px;
+}
+
+.signup-card {
+  width: 100%;
+  max-width: 520px;
+  padding: 24px;
+}
+
+.full-width { width: 100%; margin-bottom: 8px; }
+.half-width { width: 48%; }
+.row { display: flex; gap: 4%; }
+
+.error-message {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #f44336;
+  margin-bottom: 16px;
+  padding: 8px 12px;
+  background: #ffebee;
+  border-radius: 4px;
+}
+
+.login-link {
+  text-align: center;
+  margin-top: 16px;
+}
+
+.login-link a {
+  color: #3f51b5;
+  text-decoration: none;
+}
+

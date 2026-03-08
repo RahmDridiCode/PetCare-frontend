@@ -1,0 +1,114 @@
+<div class="pc-feed">
+
+  <!-- ══ BARRE NOUVELLE PUBLICATION ══ -->
+  <div *ngIf="user" class="pc-new-post-bar" (click)="openNewPost()">
+    <img [src]="user.image || 'assets/images/avatar.jpg'" alt="avatar" class="pc-new-post-avatar" />
+    <div class="pc-new-post-placeholder">
+      <span>Quoi de neuf, {{ user.fname }} ? Partagez quelque chose...</span>
+    </div>
+    <button mat-raised-button color="primary" class="pc-new-post-btn">
+      <mat-icon>add_circle_outline</mat-icon> Publier
+    </button>
+  </div>
+
+  <!-- ══ LISTE DES PUBLICATIONS ══ -->
+  <ng-container *ngFor="let post of posts">
+    <div class="pc-post-card" [attr.data-id]="post._id">
+
+      <!-- En-tête du post -->
+      <div class="pc-post-header">
+        <a [routerLink]="['/profile', post.user?._id]" class="pc-post-author-link">
+          <img [src]="post.user?.image || 'assets/images/avatar.jpg'" alt="avatar" class="pc-post-avatar" />
+          <div class="pc-post-author-info">
+            <span class="pc-post-author-name">{{ post.user?.fname }} {{ post.user?.lname }}</span>
+            <span class="pc-post-meta">
+              {{ post.date | date:'dd MMM yyyy · HH:mm' }}
+              <span *ngIf="post.categorie" class="pc-categorie-badge">{{ post.categorie }}</span>
+            </span>
+          </div>
+        </a>
+
+        <!-- Actions propriétaire -->
+        <div *ngIf="isOwner(post)" class="pc-post-owner-actions">
+          <button mat-icon-button (click)="startEdit(post)" title="Modifier">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button color="warn" (click)="deletePost(post._id)" title="Supprimer">
+            <mat-icon>delete_outline</mat-icon>
+          </button>
+        </div>
+      </div>
+
+      <!-- Corps du post -->
+      <div class="pc-post-body">
+        <div *ngIf="editingPostId === post._id; else viewMode" class="pc-post-edit">
+          <mat-form-field appearance="outline" class="full-width">
+            <textarea matInput [(ngModel)]="editDescription" rows="3" placeholder="Modifier votre publication..."></textarea>
+          </mat-form-field>
+          <div class="pc-edit-actions">
+            <button mat-raised-button color="primary" (click)="saveEdit(post._id)">
+              <mat-icon>check</mat-icon> Valider
+            </button>
+            <button mat-stroked-button (click)="cancelEdit()">Annuler</button>
+          </div>
+        </div>
+
+        <ng-template #viewMode>
+          <p class="pc-post-text">{{ post.description }}</p>
+        </ng-template>
+
+        <!-- Images -->
+        <div *ngIf="post.images?.length" class="pc-post-images" [class.pc-single]="post.images!.length === 1">
+          <img *ngFor="let img of post.images" [src]="img" alt="Image de la publication" class="pc-post-img" />
+        </div>
+      </div>
+
+      <!-- Compteurs -->
+      <div class="pc-post-stats">
+        <span *ngIf="post.likes?.length">
+          <mat-icon class="stat-icon liked">thumb_up</mat-icon>
+          {{ post.likes!.length }} j'aime
+        </span>
+        <span *ngIf="post.comments?.length" class="ms-auto">
+          {{ post.comments!.length }} commentaire{{ post.comments!.length > 1 ? 's' : '' }}
+        </span>
+      </div>
+
+      <!-- Actions -->
+      <div class="pc-post-actions">
+        <button mat-button class="pc-action-btn" (click)="addLike(post._id)">
+          <mat-icon>thumb_up_off_alt</mat-icon>
+          J'aime
+        </button>
+        <button mat-button class="pc-action-btn" (click)="toggleComments(post._id)">
+          <mat-icon>chat_bubble_outline</mat-icon>
+          Commenter
+        </button>
+        <button mat-button class="pc-action-btn">
+          <mat-icon>share</mat-icon>
+          Partager
+        </button>
+        <button *ngIf="user" mat-button class="pc-action-btn pc-action-report" (click)="openReport(post._id)">
+          <mat-icon>outlined_flag</mat-icon>
+          Signaler
+        </button>
+      </div>
+
+      <!-- Commentaires -->
+      <div *ngIf="isCommentsExpanded(post._id)" class="pc-post-comments">
+        <app-comments [postId]="post._id"></app-comments>
+      </div>
+    </div>
+  </ng-container>
+
+  <!-- État vide -->
+  <div *ngIf="posts.length === 0" class="pc-empty-feed">
+    <div class="pc-empty-icon">🐾</div>
+    <h3>Aucune publication pour le moment</h3>
+    <p>Soyez le premier à partager quelque chose !</p>
+    <button *ngIf="user" mat-raised-button color="primary" (click)="openNewPost()">
+      <mat-icon>add</mat-icon> Créer une publication
+    </button>
+  </div>
+</div>
+

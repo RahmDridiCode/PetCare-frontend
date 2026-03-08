@@ -1,0 +1,17 @@
+.full-width {
+  width: 100%;
+}
+
+.success-message {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #4caf50;
+  padding: 16px;
+  font-size: 16px;
+}
+
+.success-message mat-icon {
+  color: #4caf50;
+}
+

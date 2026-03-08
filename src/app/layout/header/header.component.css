@@ -1,0 +1,205 @@
+/* ═══════════════════════════════════════
+   PetCare Header — design moderne
+   ═══════════════════════════════════════ */
+
+.pc-header {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 0 28px;
+  height: 68px;
+  background: linear-gradient(135deg, #6c63ff 0%, #4b44cc 100%);
+  box-shadow: 0 4px 20px rgba(108, 99, 255, 0.35);
+}
+
+/* ── LOGO ── */
+.pc-logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+.pc-logo__icon { font-size: 26px; line-height: 1; }
+.pc-logo__text {
+  font-family: 'Poppins', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 0.5px;
+}
+
+/* ── BARRE DE RECHERCHE ── */
+.pc-search-wrap {
+  flex: 1;
+  max-width: 480px;
+  position: relative;
+}
+
+.pc-search-box {
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1.5px solid rgba(255, 255, 255, 0.25);
+  border-radius: 50px;
+  padding: 6px 14px;
+  gap: 8px;
+  backdrop-filter: blur(6px);
+  transition: background 0.2s, border-color 0.2s;
+}
+.pc-search-box:focus-within {
+  background: rgba(255, 255, 255, 0.22);
+  border-color: rgba(255, 255, 255, 0.6);
+}
+
+.pc-search-icon {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+}
+
+.pc-search-input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  outline: none;
+  color: #fff;
+  font-size: 14px;
+  font-family: inherit;
+  min-width: 0;
+}
+.pc-search-input::placeholder { color: rgba(255, 255, 255, 0.65); }
+
+.pc-search-clear {
+  color: rgba(255, 255, 255, 0.7) !important;
+  width: 28px !important;
+  height: 28px !important;
+  line-height: 1 !important;
+}
+.pc-search-clear mat-icon { font-size: 16px; }
+
+/* Dropdown résultats */
+.pc-search-results {
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 0;
+  right: 0;
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+  overflow: hidden;
+  z-index: 2000;
+  max-height: 320px;
+  overflow-y: auto;
+}
+.pc-search-result {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  text-decoration: none;
+  color: #1e1e2e;
+  transition: background 0.15s;
+}
+.pc-search-result:hover { background: #f4f6fb; text-decoration: none; }
+.pc-search-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #e5e7eb;
+}
+.pc-search-name { font-size: 14px; font-weight: 600; color: #1e1e2e; }
+.pc-search-role { font-size: 12px; color: #6b7280; }
+
+/* ── ACTIONS DROITE ── */
+.pc-nav-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+/* Chip utilisateur */
+.pc-user-chip {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1.5px solid rgba(255, 255, 255, 0.25);
+  border-radius: 50px;
+  padding: 5px 14px 5px 5px;
+  text-decoration: none;
+  transition: background 0.2s, transform 0.2s;
+  cursor: pointer;
+}
+.pc-user-chip:hover {
+  background: rgba(255, 255, 255, 0.25);
+  transform: translateY(-1px);
+  text-decoration: none;
+}
+.pc-user-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid rgba(255, 255, 255, 0.6);
+}
+.pc-user-info {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+.pc-user-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: #fff;
+  white-space: nowrap;
+}
+.pc-user-role {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.75);
+  white-space: nowrap;
+}
+
+/* Bouton menu */
+.pc-menu-btn {
+  color: #fff !important;
+}
+
+/* Boutons invités */
+.pc-btn-ghost {
+  color: #fff !important;
+  border-color: rgba(255,255,255,0.5) !important;
+  font-weight: 500;
+}
+.pc-btn-primary {
+  background: #fff !important;
+  color: #6c63ff !important;
+  font-weight: 600 !important;
+  border-radius: 50px !important;
+  padding: 0 20px !important;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.15) !important;
+}
+
+/* Logout en rouge */
+.logout-item { color: #e53935 !important; }
+.logout-item mat-icon { color: #e53935 !important; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 768px) {
+  .pc-header { padding: 0 14px; gap: 10px; height: 60px; }
+  .pc-logo__text { font-size: 17px; }
+  .pc-search-wrap { max-width: 200px; }
+  .pc-user-info { display: none; }
+  .pc-user-chip { padding: 4px; }
+}
+
+@media (max-width: 480px) {
+  .pc-search-wrap { display: none; }
+}

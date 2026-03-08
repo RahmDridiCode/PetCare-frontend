@@ -1,0 +1,112 @@
+/* ═══════════════════════════════════════
+   PetCare — Commentaires
+   ═══════════════════════════════════════ */
+
+.comments-section {
+  padding: 16px 18px;
+  background: #fafafa;
+}
+
+.comments-section h4 {
+  margin: 0 0 14px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #9ca3af;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+
+/* ── Un commentaire ── */
+.comment-item {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 14px;
+  animation: fadeInUp 0.25s ease both;
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.comment-avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #e5e7eb;
+  flex-shrink: 0;
+}
+
+.comment-body {
+  flex: 1;
+  background: #fff;
+  border-radius: 14px;
+  padding: 10px 14px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  border: 1px solid #f3f4f6;
+}
+
+.comment-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+  flex-wrap: wrap;
+}
+
+.comment-author {
+  font-weight: 600;
+  color: #1e1e2e;
+  text-decoration: none;
+  font-size: 13px;
+}
+.comment-author:hover {
+  color: #6c63ff;
+  text-decoration: none;
+}
+
+.comment-date {
+  font-size: 11px;
+  color: #9ca3af;
+}
+
+.comment-text {
+  margin: 0;
+  font-size: 14px;
+  color: #374151;
+  line-height: 1.5;
+}
+
+.comment-actions {
+  display: flex;
+  gap: 2px;
+  margin-top: 6px;
+  margin-left: -8px;
+}
+.comment-actions button {
+  transform: scale(0.8);
+  opacity: 0.5;
+  transition: opacity 0.2s;
+}
+.comment-actions button:hover { opacity: 1; }
+
+/* Mode édition */
+.edit-comment .full-width { width: 100%; }
+.edit-actions { display: flex; gap: 8px; margin-bottom: 6px; }
+
+/* ── Zone de saisie ── */
+.add-comment {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 8px;
+  padding-top: 12px;
+  border-top: 1px solid #f3f4f6;
+}
+.add-comment .full-width { flex: 1; }
+.full-width { width: 100%; }
+
+/* Réduire la hauteur du field */
+.add-comment ::ng-deep .mat-mdc-form-field-subscript-wrapper { display: none; }
+.add-comment ::ng-deep .mat-mdc-text-field-wrapper { border-radius: 50px !important; }

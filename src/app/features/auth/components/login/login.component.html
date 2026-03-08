@@ -1,0 +1,63 @@
+<div class="login-container">
+  <mat-card class="login-card">
+    <mat-card-header>
+      <mat-card-title>Connexion</mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content>
+      @if (loginFailed) {
+        <div class="error-message">
+          <mat-icon>error</mat-icon>
+          <span>Email ou mot de passe incorrect.</span>
+        </div>
+      }
+
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Email</mat-label>
+          <input matInput formControlName="email" type="email" placeholder="exemple@email.com" />
+          @if (loginForm.get('email')?.hasError('required') && loginForm.get('email')?.touched) {
+            <mat-error>L'email est requis</mat-error>
+          }
+          @if (loginForm.get('email')?.hasError('email') && loginForm.get('email')?.touched) {
+            <mat-error>Email invalide</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Mot de passe</mat-label>
+          <input matInput formControlName="password" [type]="hidePassword ? 'password' : 'text'" />
+          <button mat-icon-button matSuffix type="button" (click)="hidePassword = !hidePassword">
+            <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+          </button>
+          @if (loginForm.get('password')?.hasError('required') && loginForm.get('password')?.touched) {
+            <mat-error>Le mot de passe est requis</mat-error>
+          }
+          @if (loginForm.get('password')?.hasError('minlength') && loginForm.get('password')?.touched) {
+            <mat-error>Minimum 6 caractères</mat-error>
+          }
+        </mat-form-field>
+
+        <button mat-raised-button color="primary" type="submit" class="full-width" [disabled]="loginForm.invalid">
+          Se connecter
+        </button>
+      </form>
+
+      <div class="divider">
+        <span>OU</span>
+      </div>
+
+      <button mat-stroked-button class="full-width google-btn" (click)="signInWithGoogle()">
+        <mat-icon>login</mat-icon>
+        Se connecter avec Google
+      </button>
+
+      <div class="signup-links">
+        <p>Pas encore de compte ?</p>
+        <a routerLink="/signup">S'inscrire</a> |
+        <a routerLink="/signup/veterinaire">S'inscrire en tant que vétérinaire</a>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>
+

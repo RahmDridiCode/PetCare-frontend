@@ -1,0 +1,42 @@
+<h2 mat-dialog-title>Nouvelle publication</h2>
+
+<mat-dialog-content>
+  <form [formGroup]="postForm">
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Description</mat-label>
+      <textarea matInput formControlName="description" rows="4" placeholder="Quoi de neuf ?"></textarea>
+      <mat-error *ngIf="postForm.get('description')?.hasError('required') && postForm.get('description')?.touched">La description est requise</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Catégorie</mat-label>
+      <mat-select formControlName="categorie">
+        <mat-option value="">Aucune</mat-option>
+        <mat-option value="sante">Santé</mat-option>
+        <mat-option value="alimentation">Alimentation</mat-option>
+        <mat-option value="comportement">Comportement</mat-option>
+        <mat-option value="adoption">Adoption</mat-option>
+        <mat-option value="autre">Autre</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <div class="file-upload">
+      <button mat-stroked-button type="button" (click)="fileInput.click()">
+        <mat-icon>photo_library</mat-icon>
+        Ajouter des images
+      </button>
+      <input #fileInput type="file" accept="image/*" multiple hidden (change)="onFilesSelected($event)" />
+    </div>
+    <div *ngIf="imagePreviews.length > 0" class="image-previews">
+      <img *ngFor="let preview of imagePreviews" [src]="preview" alt="Aperçu" class="preview-img" />
+    </div>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-stroked-button (click)="onCancel()">Annuler</button>
+  <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="postForm.invalid">
+    Publier
+  </button>
+</mat-dialog-actions>
+

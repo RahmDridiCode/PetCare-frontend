@@ -1,0 +1,51 @@
+<div class="profile-container">
+  @if (user) {
+    <mat-card class="profile-card">
+      <div class="profile-header">
+        <img
+          [src]="user.image || 'assets/images/avatar.jpg'"
+          alt="Photo de profil"
+          class="profile-avatar"
+        />
+        <div class="profile-info">
+          <h2>{{ user.fname }} {{ user.lname }}</h2>
+          <p class="email">{{ user.email }}</p>
+          @if (user.role) {
+            <span class="role-badge">{{ user.role }}</span>
+          }
+        </div>
+      </div>
+
+      <mat-card-content>
+        <div class="details">
+          @if (user.phone) {
+            <div class="detail-row">
+              <mat-icon>phone</mat-icon>
+              <span>{{ user.phone }}</span>
+            </div>
+          }
+          @if (user.birthdate) {
+            <div class="detail-row">
+              <mat-icon>cake</mat-icon>
+              <span>{{ user.birthdate | date:'dd/MM/yyyy' }}</span>
+            </div>
+          }
+        </div>
+      </mat-card-content>
+
+      @if (isOwnProfile) {
+        <mat-card-actions>
+          <a mat-raised-button color="primary" routerLink="/profile/edit">
+            <mat-icon>edit</mat-icon>
+            Modifier le profil
+          </a>
+        </mat-card-actions>
+      }
+    </mat-card>
+  } @else {
+    <div class="loading">
+      <p>Chargement du profil...</p>
+    </div>
+  }
+</div>
+

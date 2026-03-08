@@ -1,0 +1,33 @@
+<h2 mat-dialog-title>Signaler la publication</h2>
+
+<mat-dialog-content>
+  @if (submitted) {
+    <div class="success-message">
+      <mat-icon>check_circle</mat-icon>
+      <span>Signalement envoyé avec succès.</span>
+    </div>
+  } @else {
+    <form [formGroup]="reportForm">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Motif du signalement</mat-label>
+        <textarea matInput formControlName="description" rows="4" placeholder="Décrivez la raison du signalement..."></textarea>
+        @if (reportForm.get('description')?.hasError('required') && reportForm.get('description')?.touched) {
+          <mat-error>Le motif est requis</mat-error>
+        }
+        @if (reportForm.get('description')?.hasError('minlength') && reportForm.get('description')?.touched) {
+          <mat-error>Minimum 10 caractères</mat-error>
+        }
+      </mat-form-field>
+    </form>
+  }
+</mat-dialog-content>
+
+@if (!submitted) {
+  <mat-dialog-actions align="end">
+    <button mat-stroked-button (click)="onCancel()">Annuler</button>
+    <button mat-raised-button color="warn" (click)="onSubmit()" [disabled]="reportForm.invalid">
+      Signaler
+    </button>
+  </mat-dialog-actions>
+}
+

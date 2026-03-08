@@ -1,0 +1,59 @@
+<div class="comments-section">
+  <h4>Commentaires</h4>
+
+  @for (comment of comments; track comment._id) {
+    <div class="comment-item">
+      <img
+        [src]="comment.user.image || 'assets/images/avatar.png'"
+        alt="avatar"
+        class="comment-avatar"
+      />
+      <div class="comment-body">
+        <div class="comment-header">
+          <a [routerLink]="['/profile', comment.user._id]" class="comment-author">
+            {{ comment.user.fname }} {{ comment.user.lname }}
+          </a>
+          <span class="comment-date">{{ comment.date | date:'dd/MM/yyyy HH:mm' }}</span>
+        </div>
+
+        @if (editingCommentId === comment._id) {
+          <div class="edit-comment">
+            <mat-form-field appearance="outline" class="full-width">
+              <input matInput [(ngModel)]="editCommentText" />
+            </mat-form-field>
+            <div class="edit-actions">
+              <button mat-raised-button color="primary" (click)="saveEditComment(comment._id)">Valider</button>
+              <button mat-stroked-button (click)="cancelEditComment()">Annuler</button>
+            </div>
+          </div>
+        } @else {
+          <p class="comment-text">{{ comment.text }}</p>
+        }
+
+        @if (isCommentOwner(comment) && editingCommentId !== comment._id) {
+          <div class="comment-actions">
+            <button mat-icon-button (click)="startEditComment(comment)">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button mat-icon-button color="warn" (click)="deleteComment(comment._id)">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
+        }
+      </div>
+    </div>
+  }
+
+  @if (user) {
+    <div class="add-comment">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Ajouter un commentaire...</mat-label>
+        <input matInput [(ngModel)]="newCommentText" (keyup.enter)="addComment()" />
+      </mat-form-field>
+      <button mat-icon-button color="primary" (click)="addComment()" [disabled]="!newCommentText.trim()">
+        <mat-icon>send</mat-icon>
+      </button>
+    </div>
+  }
+</div>
+

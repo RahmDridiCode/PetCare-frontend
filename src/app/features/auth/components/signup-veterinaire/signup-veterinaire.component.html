@@ -1,0 +1,94 @@
+<div class="signup-container">
+  <mat-card class="signup-card">
+    <mat-card-header>
+      <mat-card-title>Inscription Vétérinaire</mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content>
+      @if (errorMessage) {
+        <div class="error-message">
+          <mat-icon>error</mat-icon>
+          <span>{{ errorMessage }}</span>
+        </div>
+      }
+
+      <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+        <div class="row">
+          <mat-form-field appearance="outline" class="half-width">
+            <mat-label>Prénom</mat-label>
+            <input matInput formControlName="fname" />
+            @if (registerForm.get('fname')?.hasError('required') && registerForm.get('fname')?.touched) {
+              <mat-error>Le prénom est requis</mat-error>
+            }
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="half-width">
+            <mat-label>Nom</mat-label>
+            <input matInput formControlName="lname" />
+            @if (registerForm.get('lname')?.hasError('required') && registerForm.get('lname')?.touched) {
+              <mat-error>Le nom est requis</mat-error>
+            }
+          </mat-form-field>
+        </div>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Email</mat-label>
+          <input matInput formControlName="email" type="email" />
+          @if (registerForm.get('email')?.hasError('email') && registerForm.get('email')?.touched) {
+            <mat-error>Email invalide</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Mot de passe</mat-label>
+          <input matInput formControlName="password" [type]="hidePassword ? 'password' : 'text'" />
+          <button mat-icon-button matSuffix type="button" (click)="hidePassword = !hidePassword">
+            <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+          </button>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Confirmer le mot de passe</mat-label>
+          <input matInput formControlName="confirmPassword" [type]="hidePassword ? 'password' : 'text'" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Téléphone</mat-label>
+          <input matInput formControlName="phone" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Date de naissance</mat-label>
+          <input matInput formControlName="birthdate" type="date" />
+        </mat-form-field>
+
+        <h3>Adresse</h3>
+        <div formGroupName="adresse">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Ville</mat-label>
+            <input matInput formControlName="ville" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Région</mat-label>
+            <input matInput formControlName="region" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Rue</mat-label>
+            <input matInput formControlName="street" />
+          </mat-form-field>
+        </div>
+
+        <button mat-raised-button color="primary" type="submit" class="full-width" [disabled]="registerForm.invalid">
+          S'inscrire en tant que vétérinaire
+        </button>
+      </form>
+
+      <div class="login-link">
+        <p>Déjà un compte ? <a routerLink="/login">Se connecter</a></p>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>
+
