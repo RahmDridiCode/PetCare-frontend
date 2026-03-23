@@ -1,0 +1,11 @@
+<div class="vet-list">
+  <h2>Vétérinaires</h2>
+  <div *ngFor="let v of veterinarians" class="vet-item">
+    <img [src]="v.image || 'assets/images/avatar.jpg'" alt="avatar" width="48" />
+    <div class="vet-info">
+      <div>{{ v.fname }} {{ v.lname }}</div>
+      <div class="vet-role">{{ v.role }}</div>
+    </div>
+    <button mat-raised-button color="primary" (click)="book(v._id)">Book Appointment</button>
+  </div>
+</div>

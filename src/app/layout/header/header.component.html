@@ -72,6 +72,19 @@
         <a mat-menu-item routerLink="/profile/edit">
           <mat-icon>edit</mat-icon><span>Modifier profil</span>
         </a>
+        <ng-container *ngIf="user?.role === 'veterinaire'; else userLinks">
+          <a mat-menu-item routerLink="/veterinarian/appointments">
+            <mat-icon>event</mat-icon><span>My Appointments (Veterinarian)</span>
+          </a>
+        </ng-container>
+        <ng-template #userLinks>
+          <a mat-menu-item routerLink="/appointments/book">
+            <mat-icon>event_available</mat-icon><span>Book Appointment</span>
+          </a>
+          <a mat-menu-item routerLink="/appointments/my">
+            <mat-icon>calendar_today</mat-icon><span>My Appointments</span>
+          </a>
+        </ng-template>
         <mat-divider></mat-divider>
         <button mat-menu-item (click)="logout()" class="logout-item">
           <mat-icon>logout</mat-icon><span>Se déconnecter</span>

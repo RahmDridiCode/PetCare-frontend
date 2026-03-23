@@ -4,14 +4,14 @@ import {
   isFakeMousedownFromScreenReader,
   isFakeTouchstartFromScreenReader,
   normalizePassiveListenerOptions
-} from "./chunk-XT4GHMEA.js";
+} from "./chunk-MP5UTTJR.js";
 import {
   _CdkPrivateStyleLoader
 } from "./chunk-K5HBTEVE.js";
 import {
   Platform,
   coerceElement
-} from "./chunk-LBRJXKUY.js";
+} from "./chunk-5EK43PI7.js";
 import {
   ANIMATION_MODULE_TYPE,
   ChangeDetectionStrategy,
@@ -667,6 +667,8 @@ var MatRippleModule = class _MatRippleModule {
 })();
 
 export {
+  RippleState,
+  RippleRef,
   defaultRippleAnimationConfig,
   RippleRenderer,
   MAT_RIPPLE_GLOBAL_OPTIONS,
@@ -674,4 +676,4 @@ export {
   _StructuralStylesLoader,
   MatRippleModule
 };
-//# sourceMappingURL=chunk-REHZLPZX.js.map
+//# sourceMappingURL=chunk-NXZV3U3B.js.map

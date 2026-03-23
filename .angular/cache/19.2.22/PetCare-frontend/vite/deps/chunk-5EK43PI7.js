@@ -88,6 +88,7 @@ function coerceElement(elementOrRef) {
 export {
   Platform,
   coerceNumberProperty,
+  _isNumberValue,
   coerceElement
 };
-//# sourceMappingURL=chunk-LBRJXKUY.js.map
+//# sourceMappingURL=chunk-5EK43PI7.js.map

@@ -1,0 +1,35 @@
+<div class="book-appt">
+    <form class="book-appt" (ngSubmit)="submit()" #appointmentForm="ngForm">
+        <h2>Book Appointment</h2>
+
+        <div *ngIf="veterinarians.length === 0">
+            <p>No veterinarians available</p>
+        </div>
+
+        <mat-form-field *ngIf="veterinarians.length" appearance="fill" style="width:100%">
+            <mat-label>Veterinarian</mat-label>
+            <mat-select [(ngModel)]="veterinarianId" name="veterinarianId" required>
+                <mat-option [value]="null">Veterinarian not selected</mat-option>
+                <mat-option *ngFor="let v of veterinarians" [value]="v._id">{{ v.fname }} {{ v.lname }}</mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+            <mat-label>Date</mat-label>
+            <input matInput [matDatepicker]="picker" [(ngModel)]="date" name="date" required />
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+            <mat-label>Time</mat-label>
+            <input matInput type="time" [(ngModel)]="time" name="time" required />
+        </mat-form-field>
+
+        <div>
+            <button mat-raised-button color="primary" type="submit" [disabled]="loading || !veterinarianId || !date || !time">
+                Send Appointment
+            </button>
+        </div>
+    </form>
+</div>

@@ -1,0 +1,42 @@
+<div class="vet-appts">
+  <h2>Appointments (Veterinarian)</h2>
+
+  <div *ngIf="appointments.length === 0">
+    <p>No appointments found</p>
+  </div>
+
+  <table *ngIf="appointments.length" mat-table [dataSource]="appointments" class="mat-elevation-z1" style="width:100%">
+    <ng-container matColumnDef="user">
+      <th mat-header-cell *matHeaderCellDef>User</th>
+      <td mat-cell *matCellDef="let a">{{ a.userId?.fname }} {{ a.userId?.lname }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="date">
+      <th mat-header-cell *matHeaderCellDef>Date</th>
+      <td mat-cell *matCellDef="let a">{{ a.date | date:'mediumDate' }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="time">
+      <th mat-header-cell *matHeaderCellDef>Time</th>
+      <td mat-cell *matCellDef="let a">{{ a.time }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="status">
+      <th mat-header-cell *matHeaderCellDef>Status</th>
+      <td mat-cell *matCellDef="let a">{{ a.status }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef>Actions</th>
+      <td mat-cell *matCellDef="let a">
+          <span *ngIf="a.status === 'pending'">
+        <button mat-button color="primary" (click)="accept(a._id)">Accept</button>
+        <button mat-button color="warn" (click)="reject(a._id)">Reject</button>
+        </span>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+</div>

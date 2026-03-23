@@ -54,6 +54,37 @@ export const routes: Routes = [
       ).then((m) => m.ViewProfileComponent),
   },
   {
+    path: 'veterinarians',
+    loadComponent: () =>
+      import('./features/appointments/components/veterinarian-list/veterinarian-list.component').then(
+        (m) => m.VeterinarianListComponent
+      ),
+  },
+  {
+    path: 'appointments/book',
+    loadComponent: () =>
+      import('./features/appointments/components/book-appointment/book-appointment.component').then(
+        (m) => m.BookAppointmentComponent
+      ),
+    canActivate: [authGuard],
+  },
+  {
+    path: 'appointments/my',
+    loadComponent: () =>
+      import('./features/appointments/components/appointment-dashboard/appointment-dashboard.component').then(
+        (m) => m.AppointmentDashboardComponent
+      ),
+    canActivate: [authGuard],
+  },
+  {
+    path: 'veterinarian/appointments',
+    loadComponent: () =>
+      import('./features/appointments/components/veterinarian-appointments/veterinarian-appointments.component').then(
+        (m) => m.VeterinarianAppointmentsComponent
+      ),
+    canActivate: [authGuard],
+  },
+  {
     path: '**',
     redirectTo: '',
   },

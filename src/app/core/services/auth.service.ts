@@ -119,7 +119,7 @@ export class AuthService {
       lname: data.lname,
       email: data.email,
       password: data.password,
-      role: 'user',
+      role: 'veterinaire',
       birthdate: data.birthdate,
       phone: data.phone,
       adresse: data.adresse,
