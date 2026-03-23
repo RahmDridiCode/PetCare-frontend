@@ -38,4 +38,15 @@ export class AppointmentService {
   rejectAppointment(id: string): Observable<any> {
     return this.http.put<any>(`${this.api}/${id}/reject`, {});
   }
+
+    rateVeterinarian(appointmentId: string, rating: number) {
+        return this.http.put<any>(
+            `${this.api}/rate`,
+            {
+                appointmentId: appointmentId,
+                rating: rating
+            }
+        );
+    }
+
 }

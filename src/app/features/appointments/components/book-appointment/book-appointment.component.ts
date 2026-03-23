@@ -29,7 +29,8 @@ import { take } from 'rxjs/operators';
     MatSnackBarModule,
   ],
   templateUrl: './book-appointment.component.html',
-  styleUrls: [],
+  styleUrls: ['./book-appointment.component.css'], 
+  
 })
 export class BookAppointmentComponent implements OnInit {
   veterinarianId: string | null = null;

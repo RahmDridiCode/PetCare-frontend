@@ -9,8 +9,13 @@
         <mat-form-field *ngIf="veterinarians.length" appearance="fill" style="width:100%">
             <mat-label>Veterinarian</mat-label>
             <mat-select [(ngModel)]="veterinarianId" name="veterinarianId" required>
-                <mat-option [value]="null">Veterinarian not selected</mat-option>
-                <mat-option *ngFor="let v of veterinarians" [value]="v._id">{{ v.fname }} {{ v.lname }}</mat-option>
+                <mat-option *ngFor="let v of veterinarians" [value]="v._id">
+                <img [src]="v.image || 'assets/images/avatar.jpg'" alt="{{v.fname}}" class="vet-avatar" />
+                <span>{{ v.fname }} {{ v.lname }}</span>
+                <span *ngIf="v.ratingCount > 0" class="vet-rating">
+                    ⭐ {{ v.rating.toFixed(1) }} ({{ v.ratingCount }})
+                </span>
+                </mat-option>
             </mat-select>
         </mat-form-field>
 

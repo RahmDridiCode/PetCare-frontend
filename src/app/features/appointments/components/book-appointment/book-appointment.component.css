@@ -1,0 +1,18 @@
+.vet-avatar {
+    width: 40px;
+    /* largeur fixe */
+    height: 40px;
+    /* hauteur fixe */
+    object-fit: cover;
+    /* pour garder les proportions et remplir le carré */
+    border-radius: 50%;
+    /* image ronde */
+    margin-right: 8px;
+    /* espace entre image et texte */
+    vertical-align: middle;
+}
+
+.mat-option {
+    display: flex;
+    align-items: center;
+}
