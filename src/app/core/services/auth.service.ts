@@ -67,9 +67,7 @@ export class AuthService {
   }
 
   getUserByName(name: string): Observable<{ users: User[] }> {
-    return this.http.get<{ users: User[] }>(
-      `${this.api}/users/search?name=${name}`
-    );
+    return this.http.get<{ users: User[] }>(`${this.api}/users/search?name=${encodeURIComponent(name)}`);
   }
 
   getAllUsers(): Observable<User[]> {

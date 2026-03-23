@@ -41,17 +41,48 @@
 
       <!-- Corps du post -->
       <div class="pc-post-body">
-        <div *ngIf="editingPostId === post._id; else viewMode" class="pc-post-edit">
-          <mat-form-field appearance="outline" class="full-width">
-            <textarea matInput [(ngModel)]="editDescription" rows="3" placeholder="Modifier votre publication..."></textarea>
-          </mat-form-field>
-          <div class="pc-edit-actions">
-            <button mat-raised-button color="primary" (click)="saveEdit(post._id)">
-              <mat-icon>check</mat-icon> Valider
-            </button>
-            <button mat-stroked-button (click)="cancelEdit()">Annuler</button>
-          </div>
-        </div>
+
+              <div *ngIf="editingPostId === post._id; else viewMode" class="pc-post-edit">
+                  <!-- Texte -->
+                  <mat-form-field appearance="outline" class="full-width">
+                      <textarea matInput [(ngModel)]="editDescription" rows="3" placeholder="Modifier votre publication..."></textarea>
+                  </mat-form-field>
+
+                  <!-- Images existantes -->
+                  <div class="image-previews">
+                      <div class="preview-wrapper" *ngFor="let img of editImages; let i = index">
+                          <img [src]="img" alt="Aperçu" class="preview-img"/>
+                          <button type="button" class="remove-btn" (click)="removeEditImage(i)">×</button>
+                      </div>
+                  </div>
+
+                  <!-- Ajouter de nouvelles images -->
+                  <div class="file-upload">
+                      <button mat-stroked-button type="button" (click)="editFileInput.click()">
+                          <mat-icon>photo_library</mat-icon>
+                          Ajouter des images
+                      </button>
+
+                      <input
+                          #editFileInput
+                          type="file"
+                          accept="image/*"
+                          multiple
+                          hidden
+                          (change)="onEditFilesSelected($event)"
+                      />
+                  </div>
+
+                  <input #editFileInput type="file" accept="image/*" multiple hidden (change)="onEditFilesSelected($event)"/>
+
+                  <div class="pc-edit-actions">
+                      <button mat-raised-button color="primary" (click)="saveEdit(post._id)">
+                          <mat-icon>check</mat-icon> Valider
+                      </button>
+                      <button mat-stroked-button (click)="cancelEdit()">Annuler</button>
+                  </div>
+              </div>
+
 
         <ng-template #viewMode>
           <p class="pc-post-text">{{ post.description }}</p>

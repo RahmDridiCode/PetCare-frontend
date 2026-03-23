@@ -40,6 +40,8 @@ export class PostListComponent implements OnInit {
   expandedComments: Set<string> = new Set();
   editingPostId: string | null = null;
   editDescription = '';
+  editImages: string[] = []; // URLs existantes + previews nouvelles
+  editNewFiles: File[] = []; // fichiers sélectionnés pour ajout
 
   constructor(
     private postService: PostService,
@@ -76,8 +78,8 @@ export class PostListComponent implements OnInit {
       next: (posts) => {
         // Trier par date décroissante : les plus récents en premier
         this.posts = posts.sort((a, b) => {
-          const da = new Date(a.date).getTime();
-          const db = new Date(b.date).getTime();
+          const da = new Date(a.createdAt).getTime();
+          const db = new Date(b.createdAt).getTime();
           return db - da;
         });
       },
@@ -118,6 +120,31 @@ export class PostListComponent implements OnInit {
   startEdit(post: Post): void {
     this.editingPostId = post._id;
     this.editDescription = post.description;
+    this.editImages = [...post.images]; // copier les images existantes
+    this.editNewFiles = [];
+  }
+
+  onEditFilesSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (!input.files) return;
+
+    const files = Array.from(input.files);
+    this.editNewFiles.push(...files);
+
+    for (const file of files) {
+      const reader = new FileReader();
+      reader.onload = () => this.editImages.push(reader.result as string);
+      reader.readAsDataURL(file);
+    }
+  }
+
+  removeEditImage(index: number): void {
+    this.editImages.splice(index, 1);
+
+    // Si c'est une nouvelle image sélectionnée et pas encore uploadée
+    if (index >= this.editImages.length - this.editNewFiles.length) {
+      this.editNewFiles.splice(index - (this.editImages.length - this.editNewFiles.length), 1);
+    }
   }
 
   cancelEdit(): void {
@@ -126,16 +153,27 @@ export class PostListComponent implements OnInit {
   }
 
   saveEdit(postId: string): void {
-    this.postService.updatePost(postId, this.editDescription).subscribe({
-      next: () => {
-        // On met à jour seulement la description — pas de rechargement global
-        // qui écraserait les user populés et provoquerait des disparitions d'avatars
-        const post = this.posts.find((p) => p._id === postId);
+    const formData = new FormData();
+    formData.append('description', this.editDescription);
+
+    // Ajouter les nouvelles images sélectionnées
+    this.editNewFiles.forEach(file => formData.append('images', file));
+
+    // Ajouter les images existantes (URLs) à conserver
+    // On peut envoyer sous un tableau JSON que le backend interprétera
+    formData.append('existingImages', JSON.stringify(this.editImages.filter(img => !img.startsWith('data:'))));
+
+    this.postService.updatePost(postId, formData).subscribe({
+      next: (updatedPost) => {
+        const post = this.posts.find(p => p._id === postId);
         if (post) {
-          post.description = this.editDescription;
+          post.description = updatedPost.description;
+          post.images = updatedPost.images; // on met à jour les images côté front
         }
         this.editingPostId = null;
         this.editDescription = '';
+        this.editImages = [];
+        this.editNewFiles = [];
       },
     });
   }

@@ -20,6 +20,17 @@
         <mat-icon>close</mat-icon>
       </button>
     </div>
+      <div class="search-results" *ngIf="searchResults.length > 0">
+          <div
+                  class="search-user"
+                  *ngFor="let user of searchResults"
+                  (click)="goToProfile(user._id)"
+          >
+              <img [src]="user.image" alt="avatar" class="search-avatar" />
+              <span>{{ user.fname }} {{ user.lname }}</span>
+          </div>
+      </div>
+
 
     <!-- Résultats de recherche -->
     <div class="pc-search-results" *ngIf="searchResults?.length">

@@ -11,5 +11,7 @@ export interface Post {
   comments: Comment[];
   likes: Like[];
   categorie?: string;
+  createdAt: string;
+  updatedAt: string;
 }
 

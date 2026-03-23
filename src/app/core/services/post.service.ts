@@ -50,10 +50,9 @@ export class PostService {
       .pipe(catchError(this.handleError));
   }
 
-  updatePost(id: string, description: string): Observable<Post> {
-    return this.http
-      .put<Post>(`${this.api}/posts/${id}`, { description })
-      .pipe(catchError(this.handleError));
+  updatePost(id: string, data: FormData): Observable<Post> {
+    return this.http.put<Post>(`${this.api}/posts/${id}`, data)
+        .pipe(catchError(this.handleError));
   }
 
   deletePost(id: string): Observable<Post> {

@@ -27,9 +27,12 @@
       </button>
       <input #fileInput type="file" accept="image/*" multiple hidden (change)="onFilesSelected($event)" />
     </div>
-    <div *ngIf="imagePreviews.length > 0" class="image-previews">
-      <img *ngFor="let preview of imagePreviews" [src]="preview" alt="Aperçu" class="preview-img" />
-    </div>
+      <div *ngIf="imagePreviews.length > 0" class="image-previews">
+          <div class="preview-wrapper" *ngFor="let preview of imagePreviews; let i = index">
+              <img [src]="preview" alt="Aperçu" class="preview-img" />
+              <button type="button" class="remove-btn" (click)="removeImage(i)">×</button>
+          </div>
+      </div>
   </form>
 </mat-dialog-content>
 

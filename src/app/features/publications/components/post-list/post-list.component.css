@@ -146,3 +146,53 @@
   .pc-feed { padding: 0 8px 32px; margin-top: 12px; }
   .pc-post-images { grid-template-columns: 1fr; }
 }
+
+.image-previews {
+    display: flex;          /* aligne les images sur une ligne */
+    flex-wrap: wrap;        /* si beaucoup d'images, elles passent à la ligne suivante */
+    gap: 8px;               /* espace entre les images */
+    margin-top: 10px;
+}
+
+/* Wrapper de chaque image pour positionner le bouton X */
+.preview-wrapper {
+    position: relative;     /* nécessaire pour positionner le bouton */
+    display: inline-block;
+}
+
+/* Les images elles-mêmes */
+.preview-img {
+    width: 100px;           /* largeur fixe */
+    height: 100px;          /* hauteur fixe */
+    object-fit: cover;      /* recadrage si nécessaire */
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
+
+/* Bouton pour supprimer l'image */
+.remove-btn {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background-color: #9e9e9e; /* gris */
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    font-size: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+
+.remove-btn:hover {
+    background-color: #757575; /* gris plus foncé au hover */
+}
+.file-upload {
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
+

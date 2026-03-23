@@ -12,6 +12,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { Subscription } from 'rxjs';
 import { AuthService } from '../../core/services/auth.service';
 import { User } from '../../core/models/user.model';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-header',
@@ -40,7 +41,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   private userSub!: Subscription;
 
 
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService,private router: Router) {}
 
   ngOnInit(): void {
 
@@ -78,12 +79,18 @@ export class HeaderComponent implements OnInit, OnDestroy {
       return;
     }
     this.authService.getUserByName(this.searchQuery).subscribe({
-      next: (res) => (this.searchResults = res.users),
+      next: (res) => (this.searchResults =  res.users || []), // res est déjà un tableau
     });
   }
 
   logout(): void {
     this.authService.logout();
+  }
+
+  goToProfile(userId: string): void {
+    this.router.navigate(['/profile', userId]);
+    this.searchResults = []; // vider les résultats après clic
+    this.searchQuery = '';   // vider la recherche
   }
 }
 

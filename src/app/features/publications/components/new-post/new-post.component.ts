@@ -44,8 +44,9 @@ export class NewPostComponent {
   onFilesSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
     if (!input.files) return;
-
-    this.selectedFiles = Array.from(input.files);
+    const files = Array.from(input.files);
+    // Ajouter les fichiers sélectionnés aux fichiers existants
+    this.selectedFiles = [...this.selectedFiles, ...files]
     this.imagePreviews = [];
 
     for (const file of this.selectedFiles) {
@@ -55,6 +56,15 @@ export class NewPostComponent {
       };
       reader.readAsDataURL(file);
     }
+    // Réinitialiser l'input pour permettre de re-sélectionner les mêmes fichiers si besoin
+    input.value = '';
+  }
+  removeImage(index: number): void {
+    // Retirer l'image des aperçus
+    this.imagePreviews.splice(index, 1);
+
+    // Retirer le fichier correspondant
+    this.selectedFiles.splice(index, 1);
   }
 
   onSubmit(): void {
