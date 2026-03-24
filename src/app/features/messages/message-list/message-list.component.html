@@ -1,13 +1,29 @@
 <div class="message-list">
   <h2>Messages</h2>
-  <mat-nav-list>
-    <mat-list-item *ngFor="let c of convos" (click)="open(c.user._id)" style="cursor:pointer">
-      <img matListAvatar [src]="c.user.image || 'assets/images/avatar.jpg'" alt="avatar" width="40" />
-      <div matLine>{{ c.user.fname }} {{ c.user.lname }}</div>
-      <div matLine class="mat-line-small">{{ c.lastMessage }}</div>
-      <div matLine class="mat-line-small">{{ c.lastAt | date:'short' }}</div>
-      <mat-icon matListIcon>chevron_right</mat-icon>
-    </mat-list-item>
-  </mat-nav-list>
-  <div *ngIf="convos.length === 0"><p>No conversations yet</p></div>
+
+  <div *ngIf="convos.length === 0" class="empty">
+    <mat-card class="convo-card">
+      <mat-card-content>
+        <p>No messages yet. Start a conversation by contacting a veterinarian or a post owner.</p>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <div *ngFor="let c of convos" (click)="open(c.user._id)">
+    <mat-card class="convo-card">
+      <div class="convo-row">
+        <img class="convo-avatar" [src]="c.user.image || 'assets/images/avatar.jpg'" alt="avatar" />
+        <div class="convo-body">
+          <div style="display:flex; align-items:center; gap:8px">
+            <div class="convo-name">{{ c.user.fname }} {{ c.user.lname }}</div>
+            <div class="convo-meta">{{ c.lastAt | date:'short' }}</div>
+          </div>
+          <div class="convo-last">{{ c.lastMessage || 'No messages yet' }}</div>
+        </div>
+        <div *ngIf="c.unreadCount > 0">
+          <span class="unread-badge">{{ c.unreadCount }}</span>
+        </div>
+      </div>
+    </mat-card>
+  </div>
 </div>

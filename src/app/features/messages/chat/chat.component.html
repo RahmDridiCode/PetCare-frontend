@@ -1,7 +1,7 @@
 <div class="chat-shell">
   <div class="messages" #messagesContainer>
-    <div *ngFor="let m of messages" [class.me]="m.senderId._id === (m.senderId?._id || m.senderId)" class="message-row">
-      <img [src]="m.senderId?.image || 'assets/images/avatar.jpg'" alt="avatar" width="36" />
+    <div *ngFor="let m of messages" [class.me]="((m.senderId && (m.senderId._id || m.senderId)) === currentUserId)" class="message-row">
+      <img [src]="m.senderId?.image || 'assets/images/avatar.jpg'" alt="avatar" class="convo-avatar" />
       <div class="message-bubble">
         <div class="message-text">{{ m.text }}</div>
         <div class="message-meta">{{ m.createdAt | date:'short' }}</div>

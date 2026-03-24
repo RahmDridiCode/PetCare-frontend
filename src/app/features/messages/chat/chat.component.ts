@@ -6,6 +6,7 @@ import { FormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-chat',
@@ -21,13 +22,18 @@ export class ChatComponent implements OnInit, AfterViewChecked {
   userId: string | null = null;
   messages: any[] = [];
   inputText = '';
+  currentUserId: string | null = null;
 
-  constructor(private route: ActivatedRoute, private msg: MessageService) {}
+  constructor(private route: ActivatedRoute, private msg: MessageService, private auth: AuthService) {}
 
   ngOnInit(): void {
     this.route.paramMap.subscribe((p) => {
       this.userId = p.get('userId');
       if (this.userId) this.load();
+    });
+    const sub = this.auth.currentUser$.subscribe((u) => {
+      this.currentUserId = u?._id || null;
+      sub.unsubscribe();
     });
   }
 

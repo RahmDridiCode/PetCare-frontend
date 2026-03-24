@@ -4,12 +4,12 @@ import {
 import {
   _CdkPrivateStyleLoader,
   _bindEventWithOptions
-} from "./chunk-HVDGOUY6.js";
+} from "./chunk-K5HBTEVE.js";
 import {
   Platform,
   coerceElement,
   coerceNumberProperty
-} from "./chunk-5EK43PI7.js";
+} from "./chunk-6TOTDDQC.js";
 import {
   DOCUMENT
 } from "./chunk-J5C4P52M.js";
@@ -3170,7 +3170,8 @@ export {
   FocusKeyManager,
   addAriaReferencedId,
   removeAriaReferencedId,
+  AriaDescriber,
   MATERIAL_SANITY_CHECKS,
   MatCommonModule
 };
-//# sourceMappingURL=chunk-UF3FU7PF.js.map
+//# sourceMappingURL=chunk-3ANASZIG.js.map

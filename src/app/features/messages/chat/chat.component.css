@@ -1,3 +1,14 @@
+.chat-shell{display:flex; flex-direction:column; height:100%; font-family: Roboto, Arial, sans-serif}
+.messages{flex:1; overflow:auto; padding:12px; background: #fafafa}
+.message-row{display:flex; gap:8px; margin-bottom:10px; align-items:flex-end}
+.message-row.me{flex-direction:row-reverse}
+.message-bubble{max-width:70%; padding:10px 12px; border-radius:12px; background:#ffffff; box-shadow: 0 1px 3px rgba(0,0,0,0.06)}
+.message-row.me .message-bubble{background:#cfe9ff}
+.message-text{white-space:pre-wrap}
+.message-meta{font-size:11px; color:#666; margin-top:6px}
+.convo-avatar{width:36px;height:36px;border-radius:50%;object-fit:cover}
+.chat-input{display:flex; gap:8px; padding:8px; align-items:center; border-top:1px solid #eee}
+input[matInput]{flex:1}
 .messages {
     overflow-y: auto;
 }
