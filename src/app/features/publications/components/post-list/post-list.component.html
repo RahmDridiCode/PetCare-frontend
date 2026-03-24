@@ -27,6 +27,9 @@
             </span>
           </div>
         </a>
+        <div class="pc-contact-owner" *ngIf="user && user._id !== post.user?._id">
+          <button mat-button (click)="(null)" [routerLink]="['/messages', post.user?._id]">Contact {{ post.user?.fname }}</button>
+        </div>
 
         <!-- Actions propriétaire -->
         <div *ngIf="isOwner(post)" class="pc-post-owner-actions">

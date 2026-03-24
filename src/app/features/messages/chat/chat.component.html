@@ -1,0 +1,18 @@
+<div class="chat-shell">
+  <div class="messages" #messagesContainer>
+    <div *ngFor="let m of messages" [class.me]="m.senderId._id === (m.senderId?._id || m.senderId)" class="message-row">
+      <img [src]="m.senderId?.image || 'assets/images/avatar.jpg'" alt="avatar" width="36" />
+      <div class="message-bubble">
+        <div class="message-text">{{ m.text }}</div>
+        <div class="message-meta">{{ m.createdAt | date:'short' }}</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="chat-input">
+    <input matInput placeholder="Type a message" [(ngModel)]="inputText" (keyup.enter)="send()" />
+    <button mat-icon-button type="button" color="primary" (click)="send()">
+      <mat-icon>send</mat-icon>
+    </button>
+  </div>
+</div>

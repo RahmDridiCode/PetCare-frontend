@@ -1,0 +1,13 @@
+<div class="message-list">
+  <h2>Messages</h2>
+  <mat-nav-list>
+    <mat-list-item *ngFor="let c of convos" (click)="open(c.user._id)" style="cursor:pointer">
+      <img matListAvatar [src]="c.user.image || 'assets/images/avatar.jpg'" alt="avatar" width="40" />
+      <div matLine>{{ c.user.fname }} {{ c.user.lname }}</div>
+      <div matLine class="mat-line-small">{{ c.lastMessage }}</div>
+      <div matLine class="mat-line-small">{{ c.lastAt | date:'short' }}</div>
+      <mat-icon matListIcon>chevron_right</mat-icon>
+    </mat-list-item>
+  </mat-nav-list>
+  <div *ngIf="convos.length === 0"><p>No conversations yet</p></div>
+</div>

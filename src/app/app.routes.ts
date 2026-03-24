@@ -85,6 +85,16 @@ export const routes: Routes = [
     canActivate: [authGuard],
   },
   {
+    path: 'messages',
+    loadComponent: () => import('./features/messages/message-list/message-list.component').then(m => m.MessageListComponent),
+    canActivate: [authGuard],
+  },
+  {
+    path: 'messages/:userId',
+    loadComponent: () => import('./features/messages/chat/chat.component').then(m => m.ChatComponent),
+    canActivate: [authGuard],
+  },
+  {
     path: '**',
     redirectTo: '',
   },

@@ -7,5 +7,6 @@
       <div class="vet-role">{{ v.role }}</div>
     </div>
     <button mat-raised-button color="primary" (click)="book(v._id)">Book Appointment</button>
+    <button mat-stroked-button color="accent" [routerLink]="['/messages', v._id]">Contact Veterinarian</button>
   </div>
 </div>

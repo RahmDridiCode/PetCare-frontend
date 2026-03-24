@@ -7,17 +7,18 @@ import { AuthService } from '../../../../core/services/auth.service';
 import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-veterinarian-appointments',
   standalone: true,
-  imports: [CommonModule, MatButtonModule, MatTableModule, MatSnackBarModule],
+  imports: [CommonModule, MatButtonModule, MatTableModule, MatSnackBarModule, MatIconModule, MatIconModule],
   templateUrl: './veterinarian-appointments.component.html',
   styleUrls: [],
 })
 export class VeterinarianAppointmentsComponent implements OnInit {
   appointments: any[] = [];
-  displayedColumns = ['user', 'date', 'time', 'status', 'actions'];
+  displayedColumns = ['user', 'date', 'time', 'status', 'actions', 'message'];
 
   constructor(private appt: AppointmentService, private auth: AuthService, private router: Router, private snack: MatSnackBar) {}
 
@@ -43,5 +44,8 @@ export class VeterinarianAppointmentsComponent implements OnInit {
 
   reject(id: string): void {
     this.appt.rejectAppointment(id).subscribe({ next: () => { this.snack.open('Rejected', 'Close', { duration: 2000 }); this.load(); }, error: (e) => this.snack.open('Failed', 'Close', { duration: 3000 }) });
+  }
+  openMessage(userId: string) {
+    this.router.navigate(['/messages', userId]);
   }
 }

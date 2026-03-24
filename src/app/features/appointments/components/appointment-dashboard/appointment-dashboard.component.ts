@@ -7,6 +7,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatOptionModule } from '@angular/material/core';
 import { MatButtonModule } from '@angular/material/button';
+import { Router } from '@angular/router';
+import { MatIconModule } from '@angular/material/icon';
 
 
 
@@ -15,12 +17,13 @@ import { MatButtonModule } from '@angular/material/button';
   selector: 'app-appointment-dashboard',
   standalone: true,
     imports: [CommonModule, 
-        FormsModule,
-        MatTableModule,
-        MatFormFieldModule,
-        MatSelectModule,
-        MatOptionModule,
-        MatButtonModule],
+      FormsModule,
+      MatTableModule,
+      MatFormFieldModule,
+      MatSelectModule,
+      MatOptionModule,
+      MatButtonModule,
+      MatIconModule],
   templateUrl: './appointment-dashboard.component.html',
   styleUrls: [],
 })
@@ -29,11 +32,11 @@ export class AppointmentDashboardComponent implements OnInit {
   accepted: any[] = [];
   rejected: any[] = [];
 
-    pendingColumns = ['veterinarian', 'date', 'time', 'status'];
-    acceptedColumns = ['veterinarian', 'date', 'time', 'status', 'rating'];
-    rejectedColumns = ['veterinarian', 'date', 'time', 'status'];
+    pendingColumns = ['veterinarian', 'date', 'time', 'status', 'message'];
+    acceptedColumns = ['veterinarian', 'date', 'time', 'status', 'rating', 'message'];
+    rejectedColumns = ['veterinarian', 'date', 'time', 'status', 'message'];
 
-  constructor(private appt: AppointmentService) {}
+  constructor(private appt: AppointmentService, private router: Router) {}
 
   ngOnInit(): void {
     this.appt.getUserAppointments().subscribe({
@@ -44,6 +47,10 @@ export class AppointmentDashboardComponent implements OnInit {
         this.rejected = list.filter((a: any) => a.status === 'rejected');
       },
     });
+  }
+
+  openMessage(userId: string): void {
+    this.router.navigate(['/messages', userId]);
   }
 
     rate(a: any) {
