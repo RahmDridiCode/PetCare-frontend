@@ -6,6 +6,9 @@ import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { MatBadgeModule } from '@angular/material/badge';
+import { SocketService } from '../../../core/services/socket.service';
+import { AuthService } from '../../../core/services/auth.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-message-list',
@@ -28,11 +31,41 @@ import { MatBadgeModule } from '@angular/material/badge';
 })
 export class MessageListComponent implements OnInit {
   convos: any[] = [];
+  private subs: Subscription[] = [];
 
-  constructor(private msg: MessageService, private router: Router) {}
+  constructor(private msg: MessageService, private router: Router, private socket: SocketService, private auth: AuthService) {}
 
   ngOnInit(): void {
     this.load();
+    this.socket.connect();
+    this.subs.push(this.socket.onReceive().subscribe((m) => {
+      // update conversation list: m is the populated message
+      const otherId = (m.senderId && (m.senderId._id || m.senderId)) === this.getCurrentUserId() ? (m.receiverId._id || m.receiverId) : (m.senderId._id || m.senderId);
+      const conv = this.convos.find(c => c.user._id === otherId);
+      if (conv) {
+        conv.lastMessage = m.text;
+        conv.lastAt = m.createdAt;
+        // if message is from other user, increment unread
+        if ((m.senderId && (m.senderId._id || m.senderId)) !== this.getCurrentUserId()) conv.unreadCount = (conv.unreadCount || 0) + 1;
+      } else {
+        // prepend new conversation
+        this.convos.unshift({ user: m.senderId, lastMessage: m.text, lastAt: m.createdAt, unreadCount: 1 });
+      }
+    }));
+    this.subs.push(this.socket.onRead().subscribe((p) => {
+      // p: { from: myId } indicates other user read my messages
+      const otherId = p.from;
+      const conv = this.convos.find(c => c.user._id === otherId);
+      if (conv) conv.unreadCount = 0;
+    }));
+  }
+
+  private getCurrentUserId(): string | null {
+    return this.auth.getUserId() || localStorage.getItem('userId');
+  }
+
+  ngOnDestroy(): void {
+    this.subs.forEach(s => s.unsubscribe());
   }
 
   load(): void {

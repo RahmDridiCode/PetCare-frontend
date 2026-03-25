@@ -1,0 +1,25 @@
+# node modules
+node_modules/
+
+# build files
+dist/
+build/
+
+# Angular cache
+.angular/
+.angular/cache/
+
+# environment files
+.env
+
+# logs
+npm-debug.log
+yarn-error.log
+
+# IDE
+.vscode/
+.idea/
+
+# system
+.DS_Store
+Thumbs.db
