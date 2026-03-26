@@ -101,6 +101,18 @@ export class PostService {
       .pipe(catchError(this.handleError));
   }
 
+  sharePost(postId: string): Observable<Post> {
+    return this.http
+      .post<Post>(`${this.api}/posts/${postId}/share`, {})
+      .pipe(catchError(this.handleError));
+  }
+
+  getPostsByUser(userId: string): Observable<Post[]> {
+    return this.http
+      .get<Post[]>(`${this.api}/posts/user/${userId}`)
+      .pipe(catchError(this.handleError));
+  }
+
   // ────── Report ──────
 
   report(data: Report): Observable<any> {

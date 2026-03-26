@@ -13,5 +13,7 @@ export interface Post {
   categorie?: string;
   createdAt: string;
   updatedAt: string;
+  sharedBy?: User | null;
+  originalPost?: string | null;
 }
 

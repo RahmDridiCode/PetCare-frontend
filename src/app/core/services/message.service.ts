@@ -20,4 +20,9 @@ export class MessageService {
   getUsers(): Observable<any> {
     return this.http.get<any>(`${this.api}/users`);
   }
+
+  getUnreadCount(): Observable<any> {
+    return this.http.get<any>(`${this.api}/unread-count`);
+  }
+  
 }

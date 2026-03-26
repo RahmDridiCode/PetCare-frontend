@@ -172,6 +172,11 @@
   color: #fff !important;
 }
 
+.notif-avatar { width:36px; height:36px; border-radius:50%; margin-right:8px }
+.notif-body { display:flex; flex-direction:column; align-items:flex-start }
+.notif-time { font-size:11px; color:#777 }
+.pc-no-notifs { padding:12px 20px; color:#666 }
+
 /* Boutons invités */
 .pc-btn-ghost {
   color: #fff !important;
@@ -229,3 +234,57 @@
   border-radius:50%;
   margin-right:10px;
 }
+
+/* ── Notifications menu ── */
+.notif-item {
+  display: flex !important;
+  align-items: flex-start !important;
+  gap: 10px !important;
+  padding: 10px 16px !important;
+  min-height: 56px !important;
+  border-left: 3px solid transparent;
+  transition: background 0.15s;
+}
+.notif-unread {
+  background: #f5f3ff !important;
+  border-left-color: #6c63ff !important;
+}
+.notif-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.notif-body {
+  flex: 1;
+  min-width: 0;
+  font-size: 13px;
+  line-height: 1.4;
+  color: #1e1e2e;
+}
+.notif-time {
+  font-size: 11px;
+  color: #9ca3af;
+  margin-top: 3px;
+}
+.notif-type-icon {
+  font-size: 18px !important;
+  width: 18px !important;
+  height: 18px !important;
+  flex-shrink: 0;
+  margin-top: 4px;
+}
+.notif-icon-like   { color: #e53935; }
+.notif-icon-comment { color: #1976d2; }
+.notif-icon-share  { color: #388e3c; }
+.notif-icon-appointment { color: #f57c00; }
+.pc-no-notifs {
+  padding: 24px 16px;
+  text-align: center;
+  color: #9ca3af;
+  font-size: 13px;
+}
+
+

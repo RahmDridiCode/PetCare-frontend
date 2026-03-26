@@ -61,7 +61,39 @@
         </div>
       </a>
 
-      <!-- Menu kebab -->
+      <!-- Messages icon -->
+      <button mat-icon-button class="pc-menu-btn" aria-label="Messages" (click)="goToMessageList()" [matBadge]="msgCount" matBadgeColor="warn" [matBadgeHidden]="msgCount===0">
+        <mat-icon>mail</mat-icon>
+      </button>
+
+      <!-- Notifications -->
+      <button mat-icon-button [matMenuTriggerFor]="notifMenu" class="pc-menu-btn" aria-label="Notifications" (menuOpened)="openNotificationsMenu()" [matBadge]="notifCount" matBadgeColor="warn" [matBadgeHidden]="notifCount===0">
+        <mat-icon>notifications</mat-icon>
+      </button>
+      <mat-menu #notifMenu="matMenu" class="pc-mat-menu">
+        <ng-container *ngIf="notifications && notifications.length; else noNotifs">
+          <button mat-menu-item *ngFor="let n of notifications" (click)="openNotificationItem(n)" class="notif-item" [class.notif-unread]="!n.read">
+            <img [src]="n.actorId?.image || 'assets/images/avatar.jpg'" alt="avatar" class="notif-avatar" />
+            <div class="notif-body">
+              <div>
+                <strong>{{ n.actorId?.fname }} {{ n.actorId?.lname }}</strong>
+                <span *ngIf="n.actionType === 'like'"> a aimé votre publication</span>
+                <span *ngIf="n.actionType === 'comment'"> a commenté votre publication</span>
+                <span *ngIf="n.actionType === 'share'"> a partagé votre publication</span>
+                <span *ngIf="n.actionType === 'appointment'"> a pris un rendez-vous</span>
+              </div>
+              <div class="notif-time">{{ n.createdAt | date:'dd/MM/yyyy · HH:mm' }}</div>
+            </div>
+            <mat-icon class="notif-type-icon" [ngClass]="'notif-icon-' + n.actionType">
+              {{ n.actionType === 'like' ? 'thumb_up' : n.actionType === 'comment' ? 'chat_bubble' : n.actionType === 'share' ? 'repeat' : 'notifications' }}
+            </mat-icon>
+          </button>
+        </ng-container>
+        <ng-template #noNotifs>
+          <div class="pc-no-notifs">Aucune nouvelle notification</div>
+        </ng-template>
+      </mat-menu>
+
       <button mat-icon-button [matMenuTriggerFor]="userMenu" class="pc-menu-btn" aria-label="Menu">
         <mat-icon>expand_more</mat-icon>
       </button>

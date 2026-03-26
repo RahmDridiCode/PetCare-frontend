@@ -1,0 +1,149 @@
+<div class="pc-post-card" [attr.data-id]="post._id">
+
+  <!-- ── Badge partage ── -->
+  <div *ngIf="isSharedPost" class="pc-shared-banner">
+    <mat-icon class="pc-shared-icon">repeat</mat-icon>
+    <span>
+      Partagé par
+      <a [routerLink]="['/profile', post.sharedBy?._id]" class="pc-shared-link">
+        {{ post.sharedBy?.fname }} {{ post.sharedBy?.lname }}
+      </a>
+    </span>
+  </div>
+
+  <!-- ── En-tête ── -->
+  <div class="pc-post-header">
+    <a [routerLink]="['/profile', post.user._id]" class="pc-post-author-link">
+      <img [src]="post.user.image || 'assets/images/avatar.jpg'" alt="avatar" class="pc-post-avatar" />
+      <div class="pc-post-author-info">
+        <span class="pc-post-author-name">{{ post.user.fname }} {{ post.user.lname }}</span>
+        <span class="pc-post-meta">
+          {{ (post.date || post.createdAt) | date:'dd MMM yyyy · HH:mm' }}
+          <span *ngIf="post.categorie" class="pc-categorie-badge">{{ post.categorie }}</span>
+        </span>
+      </div>
+    </a>
+
+    <div class="pc-contact-owner" *ngIf="currentUser && currentUser._id !== post.user._id">
+      <button mat-button [routerLink]="['/messages', post.user._id]">Contact {{ post.user.fname }}</button>
+    </div>
+
+    <!-- Actions propriétaire -->
+    <div *ngIf="isOwner" class="pc-post-owner-actions">
+      <button mat-icon-button (click)="startEdit()" title="Modifier">
+        <mat-icon>edit</mat-icon>
+      </button>
+      <button mat-icon-button color="warn" (click)="onDelete()" title="Supprimer">
+        <mat-icon>delete_outline</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <!-- ── Corps ── -->
+  <div class="pc-post-body">
+
+    <!-- Mode édition -->
+    <div *ngIf="isEditing; else viewMode" class="pc-post-edit">
+      <mat-form-field appearance="outline" class="full-width">
+        <textarea matInput [(ngModel)]="editDescription" rows="3" placeholder="Modifier votre publication..."></textarea>
+      </mat-form-field>
+
+      <div class="image-previews">
+        <div class="preview-wrapper" *ngFor="let img of editImages; let i = index">
+          <img [src]="img" alt="Aperçu" class="preview-img" />
+          <button type="button" class="remove-btn" (click)="removeEditImage(i)">×</button>
+        </div>
+      </div>
+
+      <div class="file-upload">
+        <button mat-stroked-button type="button" (click)="editFileInput.click()">
+          <mat-icon>photo_library</mat-icon>
+          Ajouter des images
+        </button>
+        <input #editFileInput type="file" accept="image/*" multiple hidden (change)="onEditFilesSelected($event)" />
+      </div>
+
+      <div class="pc-edit-actions">
+        <button mat-raised-button color="primary" (click)="saveEdit()">
+          <mat-icon>check</mat-icon> Valider
+        </button>
+        <button mat-stroked-button (click)="cancelEdit()">Annuler</button>
+      </div>
+    </div>
+
+    <!-- Mode lecture -->
+    <ng-template #viewMode>
+      <p class="pc-post-text">{{ post.description }}</p>
+    </ng-template>
+
+    <!-- Images -->
+    <div *ngIf="post.images?.length" class="pc-post-images" [class.pc-single]="post.images!.length === 1">
+      <img
+        *ngFor="let img of post.images; let i = index"
+        [src]="img"
+        alt="Image de la publication"
+        class="pc-post-img"
+        (click)="openCarousel(i)"
+      />
+    </div>
+  </div>
+
+  <!-- ── Compteurs ── -->
+  <div class="pc-post-stats">
+    <span *ngIf="post.likes?.length">
+      <mat-icon class="stat-icon liked">thumb_up</mat-icon>
+      {{ post.likes!.length }} j'aime
+    </span>
+    <span *ngIf="post.comments?.length" class="ms-auto">
+      {{ post.comments!.length }} commentaire{{ post.comments!.length > 1 ? 's' : '' }}
+    </span>
+  </div>
+
+  <!-- ── Actions ── -->
+  <div class="pc-post-actions">
+    <button mat-button class="pc-action-btn" [class.pc-liked]="hasLiked()" (click)="onLike()">
+      <mat-icon>{{ hasLiked() ? 'thumb_up' : 'thumb_up_off_alt' }}</mat-icon>
+      J'aime
+    </button>
+    <button mat-button class="pc-action-btn" (click)="onToggleComments()">
+      <mat-icon>chat_bubble_outline</mat-icon>
+      Commenter
+    </button>
+    <button *ngIf="canShare" mat-button class="pc-action-btn" (click)="onShare()">
+      <mat-icon>share</mat-icon>
+      Partager
+    </button>
+    <button *ngIf="currentUser" mat-button class="pc-action-btn pc-action-report" (click)="onReport()">
+      <mat-icon>outlined_flag</mat-icon>
+      Signaler
+    </button>
+  </div>
+
+  <!-- ── Commentaires ── -->
+  <div *ngIf="expandedComments" class="pc-post-comments">
+    <app-comments [postId]="post._id"></app-comments>
+  </div>
+</div>
+
+<!-- ══ Carousel plein écran ══ -->
+<div *ngIf="carouselOpen" class="pc-carousel-overlay" (click)="closeCarousel()">
+  <div class="pc-carousel" (click)="$event.stopPropagation()">
+    <button class="pc-carousel-close" (click)="closeCarousel()">
+      <mat-icon>close</mat-icon>
+    </button>
+
+    <button class="pc-carousel-nav pc-carousel-prev" (click)="prevImage()" [disabled]="post.images!.length <= 1">
+      <mat-icon>chevron_left</mat-icon>
+    </button>
+
+    <div class="pc-carousel-img-wrapper">
+      <img [src]="post.images![carouselIndex]" alt="Image" class="pc-carousel-img" />
+      <div class="pc-carousel-counter">{{ carouselIndex + 1 }} / {{ post.images!.length }}</div>
+    </div>
+
+    <button class="pc-carousel-nav pc-carousel-next" (click)="nextImage()" [disabled]="post.images!.length <= 1">
+      <mat-icon>chevron_right</mat-icon>
+    </button>
+  </div>
+</div>
+

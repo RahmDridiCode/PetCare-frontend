@@ -20,12 +20,12 @@ import { Subscription } from 'rxjs';
 export class ChatComponent implements OnInit, AfterViewChecked, OnDestroy {
   @ViewChild('messagesContainer') private messagesContainer!: ElementRef;
 
-    
   userId: string | null = null;
   messages: any[] = [];
   inputText = '';
   currentUserId: string | null = null;
   private subs: Subscription[] = [];
+  private shouldScroll = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -35,64 +35,80 @@ export class ChatComponent implements OnInit, AfterViewChecked, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    // Récupérer l'ID courant depuis le service (source de vérité)
+    this.currentUserId = this.auth.getUserId();
+
     this.route.paramMap.subscribe((p) => {
       this.userId = p.get('userId');
       if (this.userId) this.load();
     });
-    const sub = this.auth.currentUser$.subscribe((u) => {
-      this.currentUserId = u?._id || null;
-      sub.unsubscribe();
-    });
-    // connect socket and subscribe to real-time messages
+
+    // Connecter le socket
     this.socket.connect();
+
+    // Écouter les messages entrants en temps réel
     this.subs.push(this.socket.onReceive().subscribe((m) => {
-      // if message belongs to this conversation, append
       if (!this.userId) return;
+      const senderId = m.senderId?._id || m.senderId;
+      const receiverId = m.receiverId?._id || m.receiverId;
       const otherId = this.userId;
-      const isRelevant = (m.senderId && (m.senderId._id || m.senderId)) === (otherId) || (m.receiverId && (m.receiverId._id || m.receiverId)) === (otherId);
-      if (isRelevant) {
-        this.messages.push(m);
-        this.scrollToBottom();
-      }
-        // marquer comme lu si message venant de l'autre utilisateur
-      if (m.senderId === otherId) this.socket.markRead(m.senderId);
-    }));
-    this.subs.push(this.socket.onSent().subscribe((m) => {
-      // ensure local display if messageSent is returned
+
+      // Vérifier si ce message appartient à cette conversation
+      const isRelevant = senderId === otherId || receiverId === otherId;
+      if (!isRelevant) return;
+
+      // Éviter les doublons : si le message vient de moi-même, il est déjà ajouté via onSent
+      if (senderId === this.currentUserId) return;
+
       this.messages.push(m);
-      this.scrollToBottom();
+      this.shouldScroll = true;
+
+      // Marquer comme lu immédiatement
+      this.socket.markRead(senderId);
+    }));
+
+    // Confirmation d'envoi de l'expéditeur
+    this.subs.push(this.socket.onSent().subscribe((m) => {
+      this.messages.push(m);
+      this.shouldScroll = true;
     }));
   }
 
   ngAfterViewChecked(): void {
-    this.scrollToBottom();
+    if (this.shouldScroll) {
+      this.scrollToBottom();
+      this.shouldScroll = false;
+    }
   }
 
   load(): void {
     if (!this.userId) return;
-    this.msg.getConversation(this.userId).subscribe({ next: (res) => (this.messages = res || []) });
+    this.msg.getConversation(this.userId).subscribe({
+      next: (res) => {
+        this.messages = res || [];
+        this.shouldScroll = true;
+        // Marquer les messages comme lus via socket aussi
+        if (this.userId) this.socket.markRead(this.userId);
+      }
+    });
   }
 
   send(): void {
     if (!this.userId || !this.inputText.trim()) return;
     const text = this.inputText.trim();
-    // send via socket for real-time
-    this.socket.sendMessage(this.userId, text);
-    // also persist via REST for reliability
-    
     this.inputText = '';
+    // Envoyer via socket (temps réel + persistance via server.js)
+    this.socket.sendMessage(this.userId, text);
   }
 
   ngOnDestroy(): void {
     this.subs.forEach(s => s.unsubscribe());
   }
 
-   private scrollToBottom(): void {
-        try {
-            const container = this.messagesContainer.nativeElement;
-            container.scrollTop = container.scrollHeight; // scroll vers le bas du conteneur
-        } catch { }
-}
-
- 
+  private scrollToBottom(): void {
+    try {
+      const container = this.messagesContainer.nativeElement;
+      container.scrollTop = container.scrollHeight;
+    } catch { }
+  }
 }

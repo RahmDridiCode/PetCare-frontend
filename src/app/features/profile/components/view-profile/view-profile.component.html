@@ -1,49 +1,97 @@
-<div class="profile-container">
-  @if (user) {
-    <mat-card class="profile-card">
-      <div class="profile-header">
-        <img
-          [src]="user.image || 'assets/images/avatar.jpg'"
-          alt="Photo de profil"
-          class="profile-avatar"
-        />
-        <div class="profile-info">
-          <h2>{{ user.fname }} {{ user.lname }}</h2>
-          <p class="email">{{ user.email }}</p>
-          @if (user.role) {
-            <span class="role-badge">{{ user.role }}</span>
-          }
+<div class="profile-page">
+  @if (profileUser) {
+
+    <!-- ══ COLONNE PROFIL ══ -->
+    <div class="profile-layout">
+
+      <!-- ── Carte profil ── -->
+      <mat-card class="profile-card">
+        <!-- Avatar + infos -->
+        <div class="profile-header">
+          <div class="profile-avatar-wrap">
+            <img
+              [src]="profileUser.image || 'assets/images/avatar.jpg'"
+              alt="Photo de profil"
+              class="profile-avatar"
+            />
+          </div>
+          <div class="profile-info">
+            <h2>{{ profileUser.fname }} {{ profileUser.lname }}</h2>
+            <p class="email">
+              <mat-icon class="info-icon">email</mat-icon>
+              {{ profileUser.email }}
+            </p>
+            @if (profileUser.role) {
+              <span class="role-badge">{{ profileUser.role }}</span>
+            }
+          </div>
         </div>
+
+        <!-- Détails -->
+        <mat-card-content>
+          <div class="details">
+            @if (profileUser.phone) {
+              <div class="detail-row">
+                <mat-icon>phone</mat-icon>
+                <span>{{ profileUser.phone }}</span>
+              </div>
+            }
+            @if (profileUser.birthdate) {
+              <div class="detail-row">
+                <mat-icon>cake</mat-icon>
+                <span>{{ profileUser.birthdate | date:'dd/MM/yyyy' }}</span>
+              </div>
+            }
+          </div>
+        </mat-card-content>
+
+        <!-- Actions -->
+        <mat-card-actions class="profile-actions">
+          @if (isOwnProfile) {
+            <a mat-raised-button color="primary" routerLink="/profile/edit">
+              <mat-icon>edit</mat-icon>
+              Modifier le profil
+            </a>
+          } @else {
+            <button mat-raised-button color="primary" (click)="goToChat()" class="btn-message">
+              <mat-icon>mail</mat-icon>
+              Envoyer un message
+            </button>
+          }
+        </mat-card-actions>
+      </mat-card>
+
+      <!-- ── Séparateur titre publications ── -->
+      <div class="posts-section-header">
+        <mat-icon>article</mat-icon>
+        <span>{{ isOwnProfile ? 'Mes publications' : 'Publications de ' + profileUser.fname }}</span>
+        <span class="posts-count" *ngIf="posts.length > 0">{{ posts.length }}</span>
       </div>
 
-      <mat-card-content>
-        <div class="details">
-          @if (user.phone) {
-            <div class="detail-row">
-              <mat-icon>phone</mat-icon>
-              <span>{{ user.phone }}</span>
-            </div>
-          }
-          @if (user.birthdate) {
-            <div class="detail-row">
-              <mat-icon>cake</mat-icon>
-              <span>{{ user.birthdate | date:'dd/MM/yyyy' }}</span>
-            </div>
-          }
+      <!-- ── Publications ── -->
+      <div class="profile-posts">
+        <div *ngIf="posts.length === 0" class="no-posts">
+          <mat-icon class="no-posts-icon">article</mat-icon>
+          <p>Aucune publication pour le moment.</p>
         </div>
-      </mat-card-content>
 
-      @if (isOwnProfile) {
-        <mat-card-actions>
-          <a mat-raised-button color="primary" routerLink="/profile/edit">
-            <mat-icon>edit</mat-icon>
-            Modifier le profil
-          </a>
-        </mat-card-actions>
-      }
-    </mat-card>
+        <app-post
+          *ngFor="let post of posts"
+          [post]="post"
+          [currentUser]="currentUser"
+          [expandedComments]="isCommentsExpanded(post._id)"
+          [showShare]="false"
+          (like)="addLike($event)"
+          (toggleComments)="toggleComments($event)"
+          (deletePost)="deletePost($event)"
+        ></app-post>
+      </div>
+
+    </div>
+
   } @else {
     <div class="loading">
+      <mat-icon class="loading-icon">hourglass_empty</mat-icon>
       <p>Chargement du profil...</p>
     </div>
   }

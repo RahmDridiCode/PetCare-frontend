@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { MessageService } from '../../../core/services/message.service';
@@ -25,35 +25,42 @@ import { Subscription } from 'rxjs';
     `.convo-name { font-weight:600 }`,
     `.convo-last { color:#666; font-size:13px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }`,
     `.convo-meta { color:#999; font-size:12px; margin-left:8px }`,
-    `.unread-badge { background:#d32f2f; color:white; padding:4px 8px; border-radius:12px; font-size:12px }
-    `,
+    `.unread-badge { background:#d32f2f; color:white; padding:4px 8px; border-radius:12px; font-size:12px }`,
   ],
 })
-export class MessageListComponent implements OnInit {
+export class MessageListComponent implements OnInit, OnDestroy {
   convos: any[] = [];
   private subs: Subscription[] = [];
 
-  constructor(private msg: MessageService, private router: Router, private socket: SocketService, private auth: AuthService) {}
+  constructor(
+    private msg: MessageService,
+    private router: Router,
+    private socket: SocketService,
+    private auth: AuthService
+  ) {}
 
   ngOnInit(): void {
     this.load();
     this.socket.connect();
+
     this.subs.push(this.socket.onReceive().subscribe((m) => {
-      // update conversation list: m is the populated message
-      const otherId = (m.senderId && (m.senderId._id || m.senderId)) === this.getCurrentUserId() ? (m.receiverId._id || m.receiverId) : (m.senderId._id || m.senderId);
+      const currentId = this.getCurrentUserId();
+      const senderId = m.senderId?._id || m.senderId;
+      const receiverId = m.receiverId?._id || m.receiverId;
+      const otherId = senderId === currentId ? receiverId : senderId;
+
       const conv = this.convos.find(c => c.user._id === otherId);
       if (conv) {
         conv.lastMessage = m.text;
         conv.lastAt = m.createdAt;
-        // if message is from other user, increment unread
-        if ((m.senderId && (m.senderId._id || m.senderId)) !== this.getCurrentUserId()) conv.unreadCount = (conv.unreadCount || 0) + 1;
+        if (senderId !== currentId) conv.unreadCount = (conv.unreadCount || 0) + 1;
       } else {
-        // prepend new conversation
-        this.convos.unshift({ user: m.senderId, lastMessage: m.text, lastAt: m.createdAt, unreadCount: 1 });
+        const user = senderId === currentId ? m.receiverId : m.senderId;
+        this.convos.unshift({ user, lastMessage: m.text, lastAt: m.createdAt, unreadCount: senderId !== currentId ? 1 : 0 });
       }
     }));
+
     this.subs.push(this.socket.onRead().subscribe((p) => {
-      // p: { from: myId } indicates other user read my messages
       const otherId = p.from;
       const conv = this.convos.find(c => c.user._id === otherId);
       if (conv) conv.unreadCount = 0;
@@ -61,7 +68,7 @@ export class MessageListComponent implements OnInit {
   }
 
   private getCurrentUserId(): string | null {
-    return this.auth.getUserId() || localStorage.getItem('userId');
+    return this.auth.getUserId();
   }
 
   ngOnDestroy(): void {

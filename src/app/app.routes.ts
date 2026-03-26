@@ -95,6 +95,10 @@ export const routes: Routes = [
     canActivate: [authGuard],
   },
   {
+    path: 'post/:id',
+    loadComponent: () => import('./features/publications/components/post-detail/post-detail.component').then(m => m.PostDetailComponent),
+  },
+  {
     path: '**',
     redirectTo: '',
   },

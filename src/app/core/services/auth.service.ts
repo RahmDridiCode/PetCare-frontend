@@ -38,6 +38,13 @@ export class AuthService {
   private currentUserSubject = new BehaviorSubject<User | null>(null);
   currentUser$ = this.currentUserSubject.asObservable();
 
+  // Référence lazy au SocketService pour éviter la dépendance circulaire
+  private socketServiceRef: { disconnect: () => void } | null = null;
+
+  setSocketService(ref: { disconnect: () => void }): void {
+    this.socketServiceRef = ref;
+  }
+
   setUser(user: User) {
     this.currentUserSubject.next(user);
   }
@@ -147,6 +154,10 @@ export class AuthService {
   }
 
   logout(): void {
+    // Déconnecter le socket AVANT de vider le token
+    if (this.socketServiceRef) {
+      this.socketServiceRef.disconnect();
+    }
     this.token = null;
     this.userId = null;
     this.authStatus$.next(false);
