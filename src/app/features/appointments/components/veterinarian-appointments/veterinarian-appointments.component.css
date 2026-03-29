@@ -1,0 +1,164 @@
+/* ── CONTAINER ── */
+.vet-appts {
+  max-width: 820px;
+  margin: 32px auto;
+  padding: 0 16px 48px;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+/* ── EN-TÊTE ── */
+.vet-appts-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 32px;
+}
+.vet-appts-header h2 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #2d3748;
+  margin: 0;
+}
+.vet-header-icon {
+  font-size: 2rem;
+  width: 2rem;
+  height: 2rem;
+  color: #667eea;
+}
+
+/* ── VIDE ── */
+.vet-empty {
+  text-align: center;
+  padding: 60px 20px;
+  color: #a0aec0;
+}
+.vet-empty-icon {
+  font-size: 4rem;
+  width: 4rem;
+  height: 4rem;
+  display: block;
+  margin: 0 auto 12px;
+}
+.vet-empty p { font-size: 1.1rem; margin: 0; }
+
+/* ── LISTE DE CARDS ── */
+.vet-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* ── CARD ── */
+.vet-card {
+  background: #fff;
+  border-radius: 14px;
+  padding: 20px 22px;
+  box-shadow: 0 2px 12px rgba(0,0,0,.07);
+  border-left: 5px solid transparent;
+  transition: transform .15s, box-shadow .15s;
+}
+.vet-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0,0,0,.11);
+}
+.vet-card--pending  { border-left-color: #f6ad55; }
+.vet-card--accepted { border-left-color: #48bb78; }
+.vet-card--rejected { border-left-color: #fc8181; }
+
+/* ── CARD HEADER ── */
+.vet-card-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+/* ── AVATAR ── */
+.vet-patient-avatar { flex-shrink: 0; }
+.vet-avatar-img {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #e2e8f0;
+}
+
+/* ── INFOS PATIENT ── */
+.vet-patient-info { flex: 1; }
+.vet-patient-name {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #2d3748;
+  margin-bottom: 4px;
+}
+.vet-patient-meta {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.88rem;
+  color: #718096;
+  flex-wrap: wrap;
+}
+.vet-meta-icon {
+  font-size: 1rem;
+  width: 1rem;
+  height: 1rem;
+}
+
+/* ── BADGE STATUS ── */
+.vet-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  border-radius: 20px;
+  padding: 4px 14px;
+  white-space: nowrap;
+  align-self: flex-start;
+}
+.vet-status-icon {
+  font-size: 1rem;
+  width: 1rem;
+  height: 1rem;
+}
+.vet-status--pending  { background: #fff3cd; color: #856404; }
+.vet-status--accepted { background: #d4edda; color: #155724; }
+.vet-status--rejected { background: #f8d7da; color: #721c24; }
+
+/* ── ACTIONS ── */
+.vet-card-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 16px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.vet-btn-accept {
+  background: #48bb78 !important;
+  color: #fff !important;
+  border-radius: 20px !important;
+  font-weight: 600 !important;
+  font-size: 0.85rem !important;
+}
+.vet-btn-accept mat-icon { font-size: 1.1rem; width: 1.1rem; height: 1.1rem; }
+
+.vet-btn-reject {
+  background: #fc8181 !important;
+  color: #fff !important;
+  border-radius: 20px !important;
+  font-weight: 600 !important;
+  font-size: 0.85rem !important;
+}
+.vet-btn-reject mat-icon { font-size: 1.1rem; width: 1.1rem; height: 1.1rem; }
+
+.vet-btn-msg {
+  border-radius: 20px !important;
+  font-size: 0.85rem !important;
+  color: #667eea !important;
+  border-color: #667eea !important;
+  font-weight: 600 !important;
+}
+.vet-btn-msg mat-icon { font-size: 1.1rem; width: 1.1rem; height: 1.1rem; }
+

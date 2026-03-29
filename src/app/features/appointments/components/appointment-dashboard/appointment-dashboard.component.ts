@@ -25,16 +25,13 @@ import { MatIconModule } from '@angular/material/icon';
       MatButtonModule,
       MatIconModule],
   templateUrl: './appointment-dashboard.component.html',
-  styleUrls: [],
+  styleUrls: ['./appointment-dashboard.component.css'],
 })
 export class AppointmentDashboardComponent implements OnInit {
   pending: any[] = [];
   accepted: any[] = [];
   rejected: any[] = [];
 
-    pendingColumns = ['veterinarian', 'date', 'time', 'status', 'message'];
-    acceptedColumns = ['veterinarian', 'date', 'time', 'status', 'rating', 'message'];
-    rejectedColumns = ['veterinarian', 'date', 'time', 'status', 'message'];
 
   constructor(private appt: AppointmentService, private router: Router) {}
 

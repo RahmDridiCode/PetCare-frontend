@@ -114,12 +114,19 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   openNotificationItem(n: any): void {
+    // Notifications de rendez-vous : redirection selon le rôle de l'utilisateur
+    if (n.actionType === 'appointment') {
+      // Le vétérinaire reçoit cette notif → redirigé vers sa liste de rendez-vous
+      this.router.navigate(['/veterinarian/appointments']);
+      return;
+    }
+    if (n.actionType === 'appointment_accepted' || n.actionType === 'appointment_rejected') {
+      // Le patient reçoit cette notif → redirigé vers son dashboard
+      this.router.navigate(['/appointments/my']);
+      return;
+    }
     const post = n.postId;
     if (!post) return;
-    // Le backend stocke toujours l'_id du post exact concerné :
-    // - like/comment sur post partagé → postId = post partagé → affiche le post partagé
-    // - like/comment sur post original → postId = post original → affiche le post original
-    // - share → postId = post partagé → affiche le post partagé
     const targetId = post._id || post;
     this.router.navigate(['/post', targetId]);
   }

@@ -1,142 +1,123 @@
-<script src="../../../../core/services/auth.service.ts"></script>
 <div class="appt-dashboard">
-  <h2>My Appointments</h2>
-
-  <div *ngIf="(pending.length + accepted.length + rejected.length) === 0">
-    <p>No appointments found</p>
+  <div class="appt-header">
+    <mat-icon class="appt-header-icon">calendar_today</mat-icon>
+    <h2>Mes Rendez-vous</h2>
   </div>
 
-  <div *ngIf="pending.length">
-    <h3>Pending</h3>
-    <table mat-table [dataSource]="pending" class="mat-elevation-z1" style="width:100%">
-      <ng-container matColumnDef="veterinarian">
-        <th mat-header-cell *matHeaderCellDef>Veterinarian</th>
-        <td mat-cell *matCellDef="let a">{{ a.veterinarianId?.fname }} {{ a.veterinarianId?.lname }}</td>
-      </ng-container>
+  <div class="appt-empty" *ngIf="(pending.length + accepted.length + rejected.length) === 0">
+    <mat-icon class="appt-empty-icon">event_busy</mat-icon>
+    <p>Aucun rendez-vous trouvé</p>
+  </div>
 
-      <ng-container matColumnDef="date">
-        <th mat-header-cell *matHeaderCellDef>Date</th>
-        <td mat-cell *matCellDef="let a">{{ a.date | date:'mediumDate' }}</td>
-      </ng-container>
-
-      <ng-container matColumnDef="time">
-        <th mat-header-cell *matHeaderCellDef>Time</th>
-        <td mat-cell *matCellDef="let a">{{ a.time }}</td>
-      </ng-container>
-
-      <ng-container matColumnDef="status">
-        <th mat-header-cell *matHeaderCellDef>Status</th>
-        <td mat-cell *matCellDef="let a">{{ a.status }}</td>
-      </ng-container>
-
-      <ng-container matColumnDef="message">
-        <th mat-header-cell *matHeaderCellDef>Message</th>
-        <td mat-cell *matCellDef="let a">
-          <button mat-icon-button color="primary" (click)="openMessage(a.veterinarianId?._id || a.veterinarianId)">
-            <mat-icon>message</mat-icon>
+  <!-- ── PENDING ── -->
+  <div class="appt-section" *ngIf="pending.length">
+    <div class="appt-section-title">
+      <span class="appt-badge appt-badge--pending">En attente</span>
+      <span class="appt-count">{{ pending.length }}</span>
+    </div>
+    <div class="appt-cards">
+      <div class="appt-card appt-card--pending" *ngFor="let a of pending">
+        <div class="appt-card-header">
+          <mat-icon class="appt-card-icon">hourglass_empty</mat-icon>
+          <div class="appt-card-info">
+            <div class="appt-vet-name">Dr. {{ a.veterinarianId?.fname }} {{ a.veterinarianId?.lname }}</div>
+            <div class="appt-meta">
+              <mat-icon class="appt-meta-icon">calendar_month</mat-icon>
+              {{ a.date | date:'dd/MM/yyyy' }}
+              <mat-icon class="appt-meta-icon">schedule</mat-icon>
+              {{ a.time }}
+            </div>
+          </div>
+          <span class="appt-status-badge appt-status-badge--pending">En attente</span>
+        </div>
+        <div class="appt-card-actions">
+          <button mat-stroked-button class="appt-msg-btn" (click)="openMessage(a.veterinarianId?._id || a.veterinarianId)">
+            <mat-icon>message</mat-icon> Contacter
           </button>
-        </td>
-      </ng-container>
-
-
-      <tr mat-header-row *matHeaderRowDef="pendingColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: pendingColumns;"></tr>
-    </table>
+        </div>
+      </div>
+    </div>
   </div>
 
-  <div *ngIf="accepted.length">
-    <h3>Accepted</h3>
-    <table mat-table [dataSource]="accepted" class="mat-elevation-z1" style="width:100%">
-      <ng-container matColumnDef="veterinarian">
-        <th mat-header-cell *matHeaderCellDef>Veterinarian</th>
-        <td mat-cell *matCellDef="let a">{{ a.veterinarianId?.fname }} {{ a.veterinarianId?.lname }}</td>
-      </ng-container>
-      <ng-container matColumnDef="date">
-        <th mat-header-cell *matHeaderCellDef>Date</th>
-        <td mat-cell *matCellDef="let a">{{ a.date | date:'mediumDate' }}</td>
-      </ng-container>
-      <ng-container matColumnDef="time">
-        <th mat-header-cell *matHeaderCellDef>Time</th>
-        <td mat-cell *matCellDef="let a">{{ a.time }}</td>
-      </ng-container>
-      <ng-container matColumnDef="status">
-        <th mat-header-cell *matHeaderCellDef>Status</th>
-        <td mat-cell *matCellDef="let a">{{ a.status }}</td>
-      </ng-container>
-    <ng-container matColumnDef="rating">
-        <th mat-header-cell *matHeaderCellDef>Rating</th>
-    
-        <td mat-cell *matCellDef="let a">
-    
-            <!-- Si déjà noté -->
-            <span *ngIf="a.rating">
-                ⭐ {{ a.rating }}/5
-            </span>
-    
-            <!-- Sinon, permettre de noter -->
-            <ng-container *ngIf="!a.rating && a.status === 'accepted'">
-    
-                <mat-form-field appearance="outline" style="width:90px">
-                    <mat-select [(ngModel)]="a.newRating">
-                        <mat-option *ngFor="let r of [1,2,3,4,5]" [value]="r">
-                            {{ r }} ⭐
-                        </mat-option>
-                    </mat-select>
-                </mat-form-field>
-    
-                <button mat-button color="primary" (click)="rate(a)">
-                    Submit
-                </button>
-    
-            </ng-container>
-        </td>
-    </ng-container>
-    
-    <ng-container matColumnDef="message">
-      <th mat-header-cell *matHeaderCellDef>Message</th>
-      <td mat-cell *matCellDef="let a">
-        <button mat-icon-button color="primary" (click)="openMessage(a.veterinarianId?._id || a.veterinarianId)">
-          <mat-icon>message</mat-icon>
-        </button>
-      </td>
-    </ng-container>
+  <!-- ── ACCEPTED ── -->
+  <div class="appt-section" *ngIf="accepted.length">
+    <div class="appt-section-title">
+      <span class="appt-badge appt-badge--accepted">Acceptés</span>
+      <span class="appt-count">{{ accepted.length }}</span>
+    </div>
+    <div class="appt-cards">
+      <div class="appt-card appt-card--accepted" *ngFor="let a of accepted">
+        <div class="appt-card-header">
+          <mat-icon class="appt-card-icon">check_circle</mat-icon>
+          <div class="appt-card-info">
+            <div class="appt-vet-name">Dr. {{ a.veterinarianId?.fname }} {{ a.veterinarianId?.lname }}</div>
+            <div class="appt-meta">
+              <mat-icon class="appt-meta-icon">calendar_month</mat-icon>
+              {{ a.date | date:'dd/MM/yyyy' }}
+              <mat-icon class="appt-meta-icon">schedule</mat-icon>
+              {{ a.time }}
+            </div>
+          </div>
+          <span class="appt-status-badge appt-status-badge--accepted">Confirmé ✓</span>
+        </div>
 
-      <tr mat-header-row *matHeaderRowDef="acceptedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: acceptedColumns;"></tr>
-    
-    </table>
-  </div>
+        <div class="appt-rating" *ngIf="a.rating">
+          <span class="appt-rating-label">Votre note :</span>
+          <span class="appt-stars">
+            <span *ngFor="let s of [1,2,3,4,5]" [class.filled]="s <= a.rating">★</span>
+          </span>
+          <span class="appt-rating-val">{{ a.rating }}/5</span>
+        </div>
 
-  <div *ngIf="rejected.length">
-    <h3>Rejected</h3>
-    <table mat-table [dataSource]="rejected" class="mat-elevation-z1" style="width:100%">
-      <ng-container matColumnDef="veterinarian">
-        <th mat-header-cell *matHeaderCellDef>Veterinarian</th>
-        <td mat-cell *matCellDef="let a">{{ a.veterinarianId?.fname }} {{ a.veterinarianId?.lname }}</td>
-      </ng-container>
-      <ng-container matColumnDef="date">
-        <th mat-header-cell *matHeaderCellDef>Date</th>
-        <td mat-cell *matCellDef="let a">{{ a.date | date:'mediumDate' }}</td>
-      </ng-container>
-      <ng-container matColumnDef="time">
-        <th mat-header-cell *matHeaderCellDef>Time</th>
-        <td mat-cell *matCellDef="let a">{{ a.time }}</td>
-      </ng-container>
-      <ng-container matColumnDef="status">
-        <th mat-header-cell *matHeaderCellDef>Status</th>
-        <td mat-cell *matCellDef="let a">{{ a.status }}</td>
-      </ng-container>
-      <ng-container matColumnDef="message">
-        <th mat-header-cell *matHeaderCellDef>Message</th>
-        <td mat-cell *matCellDef="let a">
-          <button mat-icon-button color="primary" (click)="openMessage(a.veterinarianId?._id || a.veterinarianId)">
-            <mat-icon>message</mat-icon>
+        <div class="appt-rate-form" *ngIf="!a.rating">
+          <span class="appt-rating-label">Notez ce vétérinaire :</span>
+          <div class="appt-stars-select">
+            <span *ngFor="let s of [1,2,3,4,5]"
+                  class="appt-star-btn"
+                  [class.selected]="a.newRating >= s"
+                  (click)="a.newRating = s">★</span>
+          </div>
+          <button mat-raised-button color="primary" class="appt-submit-btn" (click)="rate(a)" [disabled]="!a.newRating">
+            <mat-icon>star</mat-icon> Valider la note
           </button>
-        </td>
-      </ng-container>
+        </div>
 
-      <tr mat-header-row *matHeaderRowDef="rejectedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: rejectedColumns;"></tr>
-    </table>
+        <div class="appt-card-actions">
+          <button mat-stroked-button class="appt-msg-btn" (click)="openMessage(a.veterinarianId?._id || a.veterinarianId)">
+            <mat-icon>message</mat-icon> Contacter
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── REJECTED ── -->
+  <div class="appt-section" *ngIf="rejected.length">
+    <div class="appt-section-title">
+      <span class="appt-badge appt-badge--rejected">Refusés</span>
+      <span class="appt-count">{{ rejected.length }}</span>
+    </div>
+    <div class="appt-cards">
+      <div class="appt-card appt-card--rejected" *ngFor="let a of rejected">
+        <div class="appt-card-header">
+          <mat-icon class="appt-card-icon">cancel</mat-icon>
+          <div class="appt-card-info">
+            <div class="appt-vet-name">Dr. {{ a.veterinarianId?.fname }} {{ a.veterinarianId?.lname }}</div>
+            <div class="appt-meta">
+              <mat-icon class="appt-meta-icon">calendar_month</mat-icon>
+              {{ a.date | date:'dd/MM/yyyy' }}
+              <mat-icon class="appt-meta-icon">schedule</mat-icon>
+              {{ a.time }}
+            </div>
+          </div>
+          <span class="appt-status-badge appt-status-badge--rejected">Refusé ✗</span>
+        </div>
+        <div class="appt-card-actions">
+          <button mat-stroked-button class="appt-msg-btn" (click)="openMessage(a.veterinarianId?._id || a.veterinarianId)">
+            <mat-icon>message</mat-icon> Contacter
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
