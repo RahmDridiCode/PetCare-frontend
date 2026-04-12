@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { Post } from '../models/post.model';
@@ -26,9 +26,14 @@ export class PostService {
 
   // ────── Posts CRUD ──────
 
-  getPosts(): Observable<Post[]> {
+  getPosts(category?: string, startDate?: string, endDate?: string): Observable<Post[]> {
+    let params = new HttpParams();
+    if (category) params = params.set('category', category);
+    if (startDate) params = params.set('startDate', startDate);
+    if (endDate) params = params.set('endDate', endDate);
+
     return this.http
-      .get<Post[]>(`${this.api}/posts`)
+      .get<Post[]>(`${this.api}/posts`, { params })
       .pipe(catchError(this.handleError));
   }
 
@@ -38,10 +43,10 @@ export class PostService {
       .pipe(catchError(this.handleError));
   }
 
-  addPost(description: string, images: File[], categorie: string): Observable<Post> {
+  addPost(description: string, images: File[], category: string): Observable<Post> {
     const formData = new FormData();
     formData.append('description', description);
-    formData.append('categorie', categorie);
+    formData.append('category', category);
     for (const image of images) {
       formData.append('images', image);
     }

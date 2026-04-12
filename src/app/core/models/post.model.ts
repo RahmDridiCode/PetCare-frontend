@@ -10,7 +10,7 @@ export interface Post {
   user: User;
   comments: Comment[];
   likes: Like[];
-  categorie?: string;
+  category?: string;
   createdAt: string;
   updatedAt: string;
   sharedBy?: User | null;

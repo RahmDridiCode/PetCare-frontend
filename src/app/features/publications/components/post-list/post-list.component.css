@@ -11,6 +11,39 @@
   gap: 18px;
 }
 
+/* ══ Filters bar styles */
+.pc-filters {
+  background: linear-gradient(180deg, #ffffff, #fbfdff);
+  padding: 10px;
+  border-radius: 12px;
+  align-items: center;
+  box-shadow: 0 2px 12px rgba(16,24,40,0.04);
+}
+.pc-filters mat-form-field { width: 220px; }
+
+.filter-apply {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: #6c63ff; /* primary color */
+  color: #fff !important;
+  box-shadow: 0 6px 18px rgba(108,99,255,0.12);
+  border-radius: 10px;
+  height: 40px; padding: 0 14px;
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+.filter-apply:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(108,99,255,0.16); }
+.filter-apply mat-icon { font-size: 18px; }
+
+
+.filter-reset:hover { background: #fbfbfe; transform: translateY(-1px); box-shadow: 0 6px 18px rgba(16,24,40,0.06); }
+.filter-reset mat-icon { font-size: 18px; color: #6c63ff; }
+
+/* Responsive adjustments */
+@media (max-width: 880px) {
+  .pc-filters { flex-wrap: wrap; gap: 10px; }
+  .pc-filters mat-form-field { width: 100%; min-width: 0; }
+  .filter-apply, .filter-reset { width: 48%; }
+}
+
 /* ── Barre nouvelle publication ── */
 .pc-new-post-bar {
   display: flex;

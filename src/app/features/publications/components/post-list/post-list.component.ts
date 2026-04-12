@@ -1,9 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatInputModule } from '@angular/material/input';
 import { PostService } from '../../../../core/services/post.service';
 import { AuthService } from '../../../../core/services/auth.service';
 import { Post } from '../../../../core/models/post.model';
@@ -17,10 +23,16 @@ import { ReportComponent } from '../report/report.component';
   standalone: true,
   imports: [
     CommonModule,
+    FormsModule,
     MatButtonModule,
     MatIconModule,
     MatDialogModule,
     MatSnackBarModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatInputModule,
     PostComponent,
   ],
   templateUrl: './post-list.component.html',
@@ -30,6 +42,11 @@ export class PostListComponent implements OnInit {
   posts: Post[] = [];
   user: User | null = null;
   expandedComments: Set<string> = new Set();
+  // Filters
+  filterCategory: string | null = null;
+  filterStartDate: Date | null = null;
+  filterEndDate: Date | null = null;
+  categories: string[] = ['sante', 'alimentation', 'comportement', 'adoption', 'autre'];
 
   constructor(
     private postService: PostService,
@@ -61,11 +78,31 @@ export class PostListComponent implements OnInit {
   loadPosts(): void {
     this.postService.getPosts().subscribe({
       next: (posts) => {
-        this.posts = posts.sort((a, b) =>
-          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-        );
+        this.posts = posts;
       },
     });
+  }
+
+  applyFilters(): void {
+    const start = this.filterStartDate
+      ? this.filterStartDate.toISOString()
+      : undefined;
+
+    const end = this.filterEndDate
+      ? this.filterEndDate.toISOString()
+      : undefined;
+    this.postService.getPosts(this.filterCategory ?? undefined, start, end).subscribe({
+      next: (posts) => {
+        this.posts = posts;
+      },
+    });
+  }
+
+  clearFilters(): void {
+    this.filterCategory = null;
+    this.filterStartDate = null;
+    this.filterEndDate = null;
+    this.loadPosts();
   }
 
   addLike(postId: string): void {

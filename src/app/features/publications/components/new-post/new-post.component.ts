@@ -37,7 +37,7 @@ export class NewPostComponent {
   ) {
     this.postForm = this.fb.group({
       description: ['', [Validators.required, Validators.minLength(3)]],
-      categorie: [''],
+      category: [''],
     });
   }
 
@@ -70,8 +70,8 @@ export class NewPostComponent {
   onSubmit(): void {
     if (this.postForm.invalid) return;
 
-    const { description, categorie } = this.postForm.value;
-    this.postService.addPost(description, this.selectedFiles, categorie).subscribe({
+    const { description, category } = this.postForm.value;
+    this.postService.addPost(description, this.selectedFiles, category).subscribe({
       next: (createdPost) => this.dialogRef.close(createdPost),
       error: () => this.dialogRef.close(false),
     });

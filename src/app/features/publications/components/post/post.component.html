@@ -19,7 +19,7 @@
         <span class="pc-post-author-name">{{ post.user.fname }} {{ post.user.lname }}</span>
         <span class="pc-post-meta">
           {{ (post.date || post.createdAt) | date:'dd MMM yyyy · HH:mm' }}
-          <span *ngIf="post.categorie" class="pc-categorie-badge">{{ post.categorie }}</span>
+          <span *ngIf="post.category" class="pc-categorie-badge">{{ post.category }}</span>
         </span>
       </div>
     </a>
