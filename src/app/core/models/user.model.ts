@@ -6,6 +6,7 @@ export interface User {
   birthdate?: Date;
   phone?: string;
   role?: string;
+  isApproved?: boolean;
   username?: string;
   image?: string;
   totalRating?: number;

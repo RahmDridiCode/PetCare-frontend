@@ -119,10 +119,15 @@ export class PostService {
   }
 
   // ────── Report ──────
-
   report(data: Report): Observable<any> {
     return this.http
       .post(`${this.api}/reports/send/${data.id_sender}/${data.id_post}`, data)
+      .pipe(catchError(this.handleError));
+  }
+
+  reportPost(postId: string, reason: string): Observable<any> {
+    return this.http
+      .post(`${this.api}/posts/${postId}/report`, { reason })
       .pipe(catchError(this.handleError));
   }
 }

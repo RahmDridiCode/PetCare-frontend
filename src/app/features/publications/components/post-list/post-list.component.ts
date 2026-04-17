@@ -5,12 +5,14 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { Router } from '@angular/router';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatInputModule } from '@angular/material/input';
 import { PostService } from '../../../../core/services/post.service';
+import { AdminService } from '../../../../core/services/admin.service';
 import { AuthService } from '../../../../core/services/auth.service';
 import { Post } from '../../../../core/models/post.model';
 import { User } from '../../../../core/models/user.model';
@@ -48,12 +50,7 @@ export class PostListComponent implements OnInit {
   filterEndDate: Date | null = null;
   categories: string[] = ['sante', 'alimentation', 'comportement', 'adoption', 'autre'];
 
-  constructor(
-    private postService: PostService,
-    private authService: AuthService,
-    private dialog: MatDialog,
-    private snackBar: MatSnackBar
-  ) {}
+  
 
   ngOnInit(): void {
     this.loadPosts();
@@ -144,7 +141,22 @@ export class PostListComponent implements OnInit {
     return this.expandedComments.has(postId);
   }
 
+  constructor(
+    private postService: PostService,
+    private authService: AuthService,
+    private dialog: MatDialog,
+    private snackBar: MatSnackBar,
+    private adminService: AdminService,
+    private router: Router
+  ) {}
+
   deletePost(postId: string): void {
+    const user = (this.authService as any).currentUserSubject?.value;
+    if (user && user.role === 'admin') {
+      this.adminService.deletePost(postId).subscribe({ next: () => (this.posts = this.posts.filter((p) => p._id !== postId)) });
+      return;
+    }
+
     this.postService.deletePost(postId).subscribe({
       next: () => {
         this.posts = this.posts.filter((p) => p._id !== postId);
@@ -153,11 +165,28 @@ export class PostListComponent implements OnInit {
   }
 
   openReport(postId: string): void {
-    if (!this.user) return;
-    this.dialog.open(ReportComponent, {
-      width: '500px',
-      data: { idpost: postId, userId: this.user._id },
-    });
+    if (!this.authService.isAuthenticated) {
+      this.router.navigate(['/login']);
+      return;
+    }
+
+    const ensureAndOpen = (userId: string) => {
+      this.dialog.open(ReportComponent, {
+        width: '500px',
+        data: { idpost: postId, userId },
+      });
+    };
+
+    if (this.user) {
+      ensureAndOpen(this.user._id);
+      return;
+    }
+
+    this.authService.getUser().subscribe({ next: (res) => {
+      this.user = res.user;
+      this.authService.setUser(res.user);
+      ensureAndOpen(res.user._id);
+    }});
   }
 
   openNewPost(): void {

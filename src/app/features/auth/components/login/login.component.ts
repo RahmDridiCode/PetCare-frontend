@@ -48,7 +48,12 @@ export class LoginComponent {
     this.authService.login(email, password).subscribe({
       next: () => {
         this.loginFailed = false;
-        this.router.navigate(['/']);
+        const user = (this.authService as any).currentUserSubject?.value;
+        if (user?.role === 'admin') {
+          this.router.navigate(['/admin']);
+        } else {
+          this.router.navigate(['/']);
+        }
       },
       error: () => {
         this.loginFailed = true;

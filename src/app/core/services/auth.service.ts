@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { BehaviorSubject, Observable, tap } from 'rxjs';
+import { BehaviorSubject, Observable, tap, switchMap, map } from 'rxjs';
+import jwt_decode from 'jwt-decode';
 import { User } from '../models/user.model';
 import { environment } from '../../../environments/environment';
 
@@ -25,6 +26,17 @@ export interface SignupData {
   };
 }
 
+interface DecodedToken {
+  userId?: string;
+  email?: string;
+  role?: string;
+  isApproved?: boolean;
+  fname?: string;
+  lname?: string;
+  exp?: number;
+  iat?: number;
+}
+
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private readonly api = environment.apiUrl;
@@ -37,6 +49,7 @@ export class AuthService {
 
   private currentUserSubject = new BehaviorSubject<User | null>(null);
   currentUser$ = this.currentUserSubject.asObservable();
+  private decodedToken: DecodedToken | null = null;
 
   // Référence lazy au SocketService pour éviter la dépendance circulaire
   private socketServiceRef: { disconnect: () => void } | null = null;
@@ -57,6 +70,27 @@ export class AuthService {
 
   getToken(): string | null {
     return this.token;
+  }
+
+  decodeToken(token?: string): DecodedToken | null {
+    const t = token ?? this.token;
+    if (!t) return null;
+    try {
+      return jwt_decode(t) as DecodedToken;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  getDecodedToken(): DecodedToken | null {
+    if (!this.decodedToken) this.decodedToken = this.decodeToken();
+    return this.decodedToken;
+  }
+
+  isTokenValid(): boolean {
+    const d = this.decodeToken();
+    if (!d || !d.exp) return false;
+    return d.exp * 1000 > Date.now();
   }
 
   getUserId(): string | null {
@@ -134,23 +168,43 @@ export class AuthService {
     return this.http.post(`${this.api}/users/signup`, user);
   }
 
+  signupVeterinaireWithDiploma(formData: FormData): Observable<any> {
+    return this.http.post(`${this.api}/users/signup`, formData);
+  }
+
   login(email: string, password: string): Observable<LoginResponse> {
-    return this.http
-      .post<LoginResponse>(`${this.api}/users/login`, { email, password })
-      .pipe(
-        tap((response) => {
-          this.token = response.token;
-          if (this.token) {
-            this.userId = response.userId;
-            this.setAuthTimer(response.expiresIn);
-            const expirationDate = new Date(
-              Date.now() + response.expiresIn * 1000
-            );
-            this.saveAuthData(this.token, expirationDate, this.userId!);
-            this.authStatus$.next(true);
+    return this.http.post<LoginResponse>(`${this.api}/users/login`, { email, password }).pipe(
+      // store token and userId
+      tap((response) => {
+        this.token = response.token;
+        if (this.token) {
+          this.userId = response.userId;
+          this.decodedToken = this.decodeToken(this.token);
+          // populate minimal current user from token to avoid extra API calls in guards
+          if (this.decodedToken) {
+            this.currentUserSubject.next({
+              _id: this.decodedToken.userId as any,
+              fname: this.decodedToken.fname || '',
+              lname: this.decodedToken.lname || '',
+              email: this.decodedToken.email || '',
+              role: this.decodedToken.role || 'user',
+              isApproved: this.decodedToken.isApproved as any,
+            } as any);
           }
-        })
-      );
+          this.setAuthTimer(response.expiresIn);
+          const expirationDate = new Date(Date.now() + response.expiresIn * 1000);
+          this.saveAuthData(this.token, expirationDate, this.userId!);
+          this.authStatus$.next(true);
+        }
+      }),
+      // then load the full user and populate currentUserSubject before completing
+      switchMap((response) =>
+        this.getUser().pipe(
+          tap((res) => this.currentUserSubject.next(res.user)),
+          map(() => response)
+        )
+      )
+    );
   }
 
   logout(): void {
@@ -174,14 +228,27 @@ export class AuthService {
     if (!authData) return;
 
     const expiresIn = authData.expirationDate.getTime() - Date.now();
+
     if (expiresIn > 0) {
       this.token = authData.token;
       this.userId = authData.userId;
+      this.decodedToken = this.decodeToken(this.token);
+
       this.setAuthTimer(expiresIn / 1000);
       this.authStatus$.next(true);
+      // populate minimal user from token so guards work without API calls
+      if (this.decodedToken) {
+        this.currentUserSubject.next({
+          _id: this.decodedToken.userId as any,
+          fname: this.decodedToken.fname || '',
+          lname: this.decodedToken.lname || '',
+          email: this.decodedToken.email || '',
+          role: this.decodedToken.role || 'user',
+          isApproved: this.decodedToken.isApproved as any,
+        } as any);
+      }
     }
   }
-
   // ────── Google Auth ──────
 
   handleGoogleLogin(idToken: string, userData: any): Observable<{ message: string; user: User }> {

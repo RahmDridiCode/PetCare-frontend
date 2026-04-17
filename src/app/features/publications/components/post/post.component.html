@@ -5,7 +5,7 @@
     <mat-icon class="pc-shared-icon">repeat</mat-icon>
     <span>
       Partagé par
-      <a [routerLink]="['/profile', post.sharedBy?._id]" class="pc-shared-link">
+      <a [routerLink]="['/profile', post.sharedBy?._id ?? post.sharedBy]" class="pc-shared-link">
         {{ post.sharedBy?.fname }} {{ post.sharedBy?.lname }}
       </a>
     </span>
@@ -13,10 +13,10 @@
 
   <!-- ── En-tête ── -->
   <div class="pc-post-header">
-    <a [routerLink]="['/profile', post.user._id]" class="pc-post-author-link">
-      <img [src]="post.user.image || 'assets/images/avatar.jpg'" alt="avatar" class="pc-post-avatar" />
+    <a [routerLink]="['/profile', post.user?._id ?? post.user]" class="pc-post-author-link">
+      <img [src]="post.user?.image || 'assets/images/avatar.jpg'" alt="avatar" class="pc-post-avatar" />
       <div class="pc-post-author-info">
-        <span class="pc-post-author-name">{{ post.user.fname }} {{ post.user.lname }}</span>
+        <span class="pc-post-author-name">{{ post.user?.fname }} {{ post.user?.lname }}</span>
         <span class="pc-post-meta">
           {{ (post.date || post.createdAt) | date:'dd MMM yyyy · HH:mm' }}
           <span *ngIf="post.category" class="pc-categorie-badge">{{ post.category }}</span>
@@ -24,8 +24,8 @@
       </div>
     </a>
 
-    <div class="pc-contact-owner" *ngIf="currentUser && currentUser._id !== post.user._id">
-      <button mat-button [routerLink]="['/messages', post.user._id]">Contact {{ post.user.fname }}</button>
+    <div class="pc-contact-owner" *ngIf="currentUser && currentUser._id !== (post.user?._id ?? post.user)">
+      <button mat-button [routerLink]="['/messages', post.user?._id ?? post.user]">Contact {{ post.user?.fname }}</button>
     </div>
 
     <!-- Actions propriétaire -->
@@ -34,6 +34,11 @@
         <mat-icon>edit</mat-icon>
       </button>
       <button mat-icon-button color="warn" (click)="onDelete()" title="Supprimer">
+        <mat-icon>delete_outline</mat-icon>
+      </button>
+    </div>
+    <div *ngIf="isAdmin && !isOwner" class="pc-post-owner-actions">
+      <button mat-icon-button color="warn" (click)="onDelete()" title="Supprimer (admin)">
         <mat-icon>delete_outline</mat-icon>
       </button>
     </div>

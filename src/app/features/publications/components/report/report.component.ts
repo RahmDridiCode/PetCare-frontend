@@ -41,13 +41,8 @@ export class ReportComponent {
   onSubmit(): void {
     if (this.reportForm.invalid) return;
 
-    const report = {
-      description: this.reportForm.value.description,
-      id_post: this.data.idpost,
-      id_sender: this.data.userId,
-    };
-
-    this.postService.report(report).subscribe({
+    const reason = this.reportForm.value.description;
+    this.postService.reportPost(this.data.idpost, reason).subscribe({
       next: () => {
         this.submitted = true;
         setTimeout(() => this.dialogRef.close(), 1500);

@@ -59,6 +59,10 @@ export class PostComponent implements OnInit {
     return this.currentUser?._id === this.post?.user?._id;
   }
 
+  get isAdmin(): boolean {
+    return this.currentUser?.role === 'admin';
+  }
+
   hasLiked(): boolean {
     if (!this.currentUser || !this.post?.likes) return false;
     return this.post.likes.some((l: any) => {
@@ -167,4 +171,6 @@ export class PostComponent implements OnInit {
     if (!this.post.images?.length) return;
     this.carouselIndex = (this.carouselIndex + 1) % this.post.images.length;
   }
+
+  
 }

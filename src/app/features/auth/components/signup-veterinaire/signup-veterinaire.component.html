@@ -80,6 +80,11 @@
           </mat-form-field>
         </div>
 
+        <div class="full-width file-input">
+          <label for="diploma">Diplôme (PDF)</label>
+          <input id="diploma" type="file" accept="application/pdf" (change)="onFileSelected($event)" />
+        </div>
+
         <button mat-raised-button color="primary" type="submit" class="full-width" [disabled]="registerForm.invalid">
           S'inscrire en tant que vétérinaire
         </button>

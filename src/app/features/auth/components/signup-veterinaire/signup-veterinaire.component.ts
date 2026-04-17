@@ -26,9 +26,10 @@ import { AuthService } from '../../../../core/services/auth.service';
   styleUrls: ['./signup-veterinaire.component.css'],
 })
 export class SignupVeterinaireComponent {
-  registerForm: FormGroup;
+  registerForm!: FormGroup;
   hidePassword = true;
   errorMessage = '';
+  diplomaFile: File | null = null;
 
   constructor(
     private fb: FormBuilder,
@@ -60,7 +61,26 @@ export class SignupVeterinaireComponent {
       return;
     }
 
-    this.authService.signupAsVeterinaire(this.registerForm.value).subscribe({
+    // Prepare FormData to include diploma PDF
+    const formData = new FormData();
+    const values = this.registerForm.value;
+    formData.append('fname', values.fname);
+    formData.append('lname', values.lname);
+    formData.append('email', values.email);
+    formData.append('password', values.password);
+    formData.append('role', 'veterinaire');
+    if (values.phone) formData.append('phone', values.phone);
+    if (values.birthdate) formData.append('birthdate', values.birthdate);
+    if (values.adresse) {
+      try {
+        formData.append('adresse', JSON.stringify(values.adresse));
+      } catch (e) {}
+    }
+    if (this.diplomaFile) {
+      formData.append('diploma', this.diplomaFile, this.diplomaFile.name);
+    }
+
+    this.authService.signupVeterinaireWithDiploma(formData).subscribe({
       next: () => {
         this.router.navigate(['/login']);
       },
@@ -68,6 +88,19 @@ export class SignupVeterinaireComponent {
         this.errorMessage = err?.error?.message || "Erreur lors de l'inscription.";
       },
     });
+  }
+
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      const file = input.files[0];
+      if (file.type !== 'application/pdf') {
+        this.errorMessage = 'Veuillez fournir un fichier PDF.';
+        this.diplomaFile = null;
+        return;
+      }
+      this.diplomaFile = file;
+    }
   }
 }
 

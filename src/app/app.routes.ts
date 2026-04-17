@@ -1,5 +1,7 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth.guard';
+import { adminGuard } from './core/guards/admin.guard';
+import { vetGuard } from './core/guards/vet.guard';
 
 export const routes: Routes = [
   {
@@ -36,7 +38,7 @@ export const routes: Routes = [
       import(
         './features/profile/components/view-profile/view-profile.component'
       ).then((m) => m.ViewProfileComponent),
-    canActivate: [authGuard],
+    
   },
   {
     path: 'profile/edit',
@@ -59,6 +61,17 @@ export const routes: Routes = [
       import('./features/appointments/components/veterinarian-list/veterinarian-list.component').then(
         (m) => m.VeterinarianListComponent
       ),
+  },
+  {
+    path: 'admin',
+    loadComponent: () => import('./features/admin/admin-dashboard/admin-dashboard.component').then(m => m.AdminDashboardComponent),
+    canActivate: [adminGuard],
+    children: [
+      { path: 'veterinarians', loadComponent: () => import('./features/admin/veterinarians/veterinarians.component').then(m => m.VeterinariansComponent) },
+      { path: 'users', loadComponent: () => import('./features/admin/users/users.component').then(m => m.UsersComponent) },
+      { path: 'users/:id/edit', loadComponent: () => import('./features/admin/users/user-edit.component').then(m => m.UserEditComponent) },
+      { path: 'reports', loadComponent: () => import('./features/admin/reports/reports.component').then(m => m.ReportsComponent) },
+    ]
   },
   {
     path: 'appointments/book',

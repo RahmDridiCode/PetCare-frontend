@@ -61,6 +61,12 @@
         </div>
       </a>
 
+      <!-- Admin panel link -->
+      <a *ngIf="user?.role === 'admin'" mat-button routerLink="/admin" class="pc-admin-link">
+        <mat-icon>admin_panel_settings</mat-icon>
+        Admin
+      </a>
+
       <!-- Messages icon -->
       <button mat-icon-button class="pc-menu-btn" aria-label="Messages" (click)="goToMessageList()" [matBadge]="msgCount" matBadgeColor="warn" [matBadgeHidden]="msgCount===0">
         <mat-icon>mail</mat-icon>
@@ -104,22 +110,27 @@
         <a mat-menu-item routerLink="/profile/edit">
           <mat-icon>edit</mat-icon><span>Modifier profil</span>
         </a>
-        <ng-container *ngIf="user?.role === 'veterinaire'; else userLinks">
+
+        <!-- Appointment links: vets see their appointments, users see booking + my appointments -->
+        <ng-container *ngIf="user?.role === 'veterinaire'; else regularUserAppts">
           <a mat-menu-item routerLink="/veterinarian/appointments">
-            <mat-icon>event</mat-icon><span>My Appointments (Veterinarian)</span>
+            <mat-icon>event</mat-icon><span>Mes rendez-vous (Vétérinaire)</span>
           </a>
         </ng-container>
-        <ng-template #userLinks>
-          <a mat-menu-item routerLink="/appointments/book">
-            <mat-icon>event_available</mat-icon><span>Book Appointment</span>
-          </a>
-          <a mat-menu-item routerLink="/appointments/my">
-            <mat-icon>calendar_today</mat-icon><span>My Appointments</span>
-          </a>
+        <ng-template #regularUserAppts>
+          <ng-container *ngIf="user?.role === 'user'">
+            <a mat-menu-item routerLink="/appointments/book">
+              <mat-icon>event_available</mat-icon>
+              <span>Prendre rendez-vous</span>
+            </a>
+          
+            <a mat-menu-item routerLink="/appointments/my">
+              <mat-icon>calendar_today</mat-icon>
+              <span>Mes rendez-vous</span>
+            </a>
+          </ng-container>
         </ng-template>
-        <a mat-menu-item routerLink="/messages">
-          <mat-icon>mail</mat-icon><span>View Messages</span>
-        </a>
+
         <mat-divider></mat-divider>
         <button mat-menu-item (click)="logout()" class="logout-item">
           <mat-icon>logout</mat-icon><span>Se déconnecter</span>
