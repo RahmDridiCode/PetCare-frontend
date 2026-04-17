@@ -38,7 +38,7 @@
   </div>
 
   <!-- ══ BARRE NOUVELLE PUBLICATION ══ -->
-  <div *ngIf="user" class="pc-new-post-bar" (click)="openNewPost()">
+  <div *ngIf="user && user?.role !== 'admin'" class="pc-new-post-bar" (click)="openNewPost()">
     <img [src]="user.image || 'assets/images/avatar.jpg'" alt="avatar" class="pc-new-post-avatar" />
     <div class="pc-new-post-placeholder">
       <span>Quoi de neuf, {{ user.fname }} ? Partagez quelque chose...</span>

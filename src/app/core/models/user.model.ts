@@ -1,3 +1,5 @@
+import { S } from "@angular/material/icon-registry.d-BVwP8t9_";
+
 export interface User {
   _id: string;
   fname: string;
@@ -5,6 +7,7 @@ export interface User {
   email: string;
   birthdate?: Date;
   phone?: string;
+  address?: String;
   role?: string;
   isApproved?: boolean;
   username?: string;

@@ -62,13 +62,13 @@
       </a>
 
       <!-- Admin panel link -->
-      <a *ngIf="user?.role === 'admin'" mat-button routerLink="/admin" class="pc-admin-link">
+      <a *ngIf="user?.role === 'admin'" mat-button routerLink="/admin/users" class="pc-admin-link">
         <mat-icon>admin_panel_settings</mat-icon>
         Admin
       </a>
 
-      <!-- Messages icon -->
-      <button mat-icon-button class="pc-menu-btn" aria-label="Messages" (click)="goToMessageList()" [matBadge]="msgCount" matBadgeColor="warn" [matBadgeHidden]="msgCount===0">
+      <!-- Messages icon (hidden for admin) -->
+      <button *ngIf="user?.role !== 'admin'" mat-icon-button class="pc-menu-btn" aria-label="Messages" (click)="goToMessageList()" [matBadge]="msgCount" matBadgeColor="warn" [matBadgeHidden]="msgCount===0">
         <mat-icon>mail</mat-icon>
       </button>
 
@@ -87,11 +87,13 @@
                 <span *ngIf="n.actionType === 'comment'"> a commenté votre publication</span>
                 <span *ngIf="n.actionType === 'share'"> a partagé votre publication</span>
                 <span *ngIf="n.actionType === 'appointment'"> a pris un rendez-vous</span>
+                <span *ngIf="n.actionType === 'report'"> a signalé une publication</span>
+                <span *ngIf="n.actionType === 'vet_request'"> a demandé un compte vétérinaire</span>
               </div>
               <div class="notif-time">{{ n.createdAt | date:'dd/MM/yyyy · HH:mm' }}</div>
             </div>
             <mat-icon class="notif-type-icon" [ngClass]="'notif-icon-' + n.actionType">
-              {{ n.actionType === 'like' ? 'thumb_up' : n.actionType === 'comment' ? 'chat_bubble' : n.actionType === 'share' ? 'repeat' : 'notifications' }}
+              {{ n.actionType === 'like' ? 'thumb_up' : n.actionType === 'comment' ? 'chat_bubble' : n.actionType === 'share' ? 'repeat' : n.actionType === 'appointment' ? 'event' : n.actionType === 'report' ? 'flag' : n.actionType === 'vet_request' ? 'person_add' : 'notifications' }}
             </mat-icon>
           </button>
         </ng-container>

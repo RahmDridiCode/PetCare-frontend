@@ -24,7 +24,7 @@
       </div>
     </a>
 
-    <div class="pc-contact-owner" *ngIf="currentUser && currentUser._id !== (post.user?._id ?? post.user)">
+    <div class="pc-contact-owner" *ngIf="currentUser && currentUser._id !== (post.user?._id ?? post.user) && currentUser.role !== 'admin'">
       <button mat-button [routerLink]="['/messages', post.user?._id ?? post.user]">Contact {{ post.user?.fname }}</button>
     </div>
 
@@ -105,20 +105,20 @@
   </div>
 
   <!-- ── Actions ── -->
-  <div class="pc-post-actions">
-    <button mat-button class="pc-action-btn" [class.pc-liked]="hasLiked()" (click)="onLike()">
+    <div class="pc-post-actions">
+    <button *ngIf="!isAdmin" mat-button class="pc-action-btn" [class.pc-liked]="hasLiked()" (click)="onLike()">
       <mat-icon>{{ hasLiked() ? 'thumb_up' : 'thumb_up_off_alt' }}</mat-icon>
       J'aime
     </button>
-    <button mat-button class="pc-action-btn" (click)="onToggleComments()">
+    <button *ngIf="!isAdmin" mat-button class="pc-action-btn" (click)="onToggleComments()">
       <mat-icon>chat_bubble_outline</mat-icon>
       Commenter
     </button>
-    <button *ngIf="canShare" mat-button class="pc-action-btn" (click)="onShare()">
+    <button *ngIf="canShare && !isAdmin" mat-button class="pc-action-btn" (click)="onShare()">
       <mat-icon>share</mat-icon>
       Partager
     </button>
-    <button *ngIf="currentUser" mat-button class="pc-action-btn pc-action-report" (click)="onReport()">
+    <button *ngIf="currentUser && !isAdmin" mat-button class="pc-action-btn pc-action-report" (click)="onReport()">
       <mat-icon>outlined_flag</mat-icon>
       Signaler
     </button>
