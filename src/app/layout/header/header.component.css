@@ -292,4 +292,11 @@
  
 }
 
+/* Floating chatbot button */
+.pc-chat-fab {
+  margin-left: 8px;
+  box-shadow: 0 6px 18px rgba(76, 64, 255, 0.28);
+}
+
+
 

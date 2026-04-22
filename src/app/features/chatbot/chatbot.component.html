@@ -1,0 +1,13 @@
+<div class="chatbox">
+  <div class="messages" #messagesContainer>
+    <div *ngFor="let m of messages" [ngClass]="{'msg-user': m.role==='user', 'msg-bot': m.role==='assistant'}" class="msg">
+      <div class="bubble">{{ m.content }}</div>
+      <div class="time">{{ m.createdAt | date:'short' }}</div>
+    </div>
+  </div>
+
+  <div class="composer">
+    <input matInput placeholder="Écrire un message..." [(ngModel)]="inputText" (keydown.enter)="send()" />
+    <button mat-icon-button color="primary" (click)="send()"><mat-icon>send</mat-icon></button>
+  </div>
+</div>

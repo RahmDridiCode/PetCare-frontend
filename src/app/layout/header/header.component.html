@@ -72,6 +72,11 @@
         <mat-icon>mail</mat-icon>
       </button>
 
+      <!-- Floating Chatbot button (users only) -->
+      <a *ngIf="user?.role === 'user'" mat-mini-fab color="primary" class="pc-chat-fab" routerLink="/chatbot" title="Assistant vétérinaire">
+        <mat-icon>support_agent</mat-icon>
+      </a>
+
       <!-- Notifications -->
       <button mat-icon-button [matMenuTriggerFor]="notifMenu" class="pc-menu-btn" aria-label="Notifications" (menuOpened)="openNotificationsMenu()" [matBadge]="notifCount" matBadgeColor="warn" [matBadgeHidden]="notifCount===0">
         <mat-icon>notifications</mat-icon>
@@ -87,6 +92,7 @@
                 <span *ngIf="n.actionType === 'comment'"> a commenté votre publication</span>
                 <span *ngIf="n.actionType === 'share'"> a partagé votre publication</span>
                 <span *ngIf="n.actionType === 'appointment'"> a pris un rendez-vous</span>
+                <span *ngIf="n.actionType === 'appointment_accepted'"> a accepté votre rendez-vous</span>
                 <span *ngIf="n.actionType === 'report'"> a signalé une publication</span>
                 <span *ngIf="n.actionType === 'vet_request'"> a demandé un compte vétérinaire</span>
               </div>

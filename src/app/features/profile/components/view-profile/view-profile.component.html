@@ -36,6 +36,12 @@
                 <span>{{ profileUser.phone }}</span>
               </div>
             }
+              @if (profileUser.adresse) {
+                <div class="detail-row">
+                  <mat-icon>location_on</mat-icon>
+                  <span>{{ profileUser.adresse.street ? (profileUser.adresse.street + ', ') : '' }}{{ profileUser.adresse.ville || '' }}{{ profileUser.adresse.region ? (' — ' + profileUser.adresse.region) : '' }}</span>
+                </div>
+              }
             @if (profileUser.birthdate) {
               <div class="detail-row">
                 <mat-icon>cake</mat-icon>

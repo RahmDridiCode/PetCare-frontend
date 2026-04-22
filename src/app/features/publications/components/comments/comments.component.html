@@ -4,14 +4,14 @@
   @for (comment of comments; track comment._id) {
     <div class="comment-item">
       <img
-        [src]="comment.user.image || 'assets/images/avatar.jpg'"
+        [src]="comment.user?.image || 'assets/images/avatar.jpg'"
         alt="avatar"
         class="comment-avatar"
       />
       <div class="comment-body">
         <div class="comment-header">
-          <a [routerLink]="['/profile', comment.user._id]" class="comment-author">
-            {{ comment.user.fname }} {{ comment.user.lname }}
+          <a [routerLink]="comment.user?._id ? ['/profile', comment.user._id] : null" class="comment-author">
+            {{ comment.user?.fname }} {{ comment.user?.lname }}
           </a>
           <span class="comment-date">{{ comment.date | date:'dd/MM/yyyy HH:mm' }}</span>
         </div>

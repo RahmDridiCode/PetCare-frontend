@@ -43,6 +43,11 @@ export class EditProfileComponent implements OnInit {
       phone: ['', [Validators.pattern('[0-9]{8}')]],
       birthdate: [''],
       image: [null],
+      adresse: this.fb.group({
+        ville: [''],
+        region: [''],
+        street: [''],
+      }),
     });
   }
 
@@ -56,6 +61,7 @@ export class EditProfileComponent implements OnInit {
           email: this.user.email,
           phone: this.user.phone || '',
           birthdate: this.user.birthdate || '',
+          adresse: this.user.adresse || { ville: '', region: '', street: '' },
         });
       },
     });

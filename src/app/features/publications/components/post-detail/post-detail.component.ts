@@ -39,37 +39,46 @@ export class PostDetailComponent implements OnInit {
     private route: ActivatedRoute,
     private postService: PostService,
     private authService: AuthService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
-    // Récupérer l'utilisateur courant
-    this.currentUser = null;
+
+    // user
     this.authService.currentUser$.subscribe(u => {
-      if (u) {
-        this.currentUser = u;
-      }
+      if (u) this.currentUser = u;
     });
+
     if (!this.currentUser && this.authService.isAuthenticated) {
-      this.authService.getUser().subscribe({ next: (res) => (this.currentUser = res.user) });
+      this.authService.getUser().subscribe({
+        next: (res) => this.currentUser = res.user
+      });
     }
 
-    // Charger le post par ID depuis la route
-    const postId = this.route.snapshot.paramMap.get('id');
-    if (!postId) {
-      this.error = 'Post introuvable.';
-      this.loading = false;
-      return;
-    }
+    // post from route (IMPORTANT FIX)
+    this.route.paramMap.subscribe(params => {
 
-    this.postService.getPostById(postId).subscribe({
-      next: (post) => {
-        this.post = post;
+      const postId = params.get('id');
+
+      this.loading = true;
+      this.error = null;
+      this.post = null;
+
+      if (!postId) {
+        this.error = 'Post introuvable.';
         this.loading = false;
-      },
-      error: () => {
-        this.error = 'Impossible de charger ce post.';
-        this.loading = false;
-      },
+        return;
+      }
+
+      this.postService.getPostById(postId).subscribe({
+        next: (post) => {
+          this.post = post;
+          this.loading = false;
+        },
+        error: () => {
+          this.error = 'Impossible de charger ce post.';
+          this.loading = false;
+        }
+      });
     });
   }
 }

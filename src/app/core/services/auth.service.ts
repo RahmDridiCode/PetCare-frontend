@@ -122,8 +122,19 @@ export class AuthService {
       const fd = new FormData();
       Object.keys(form).forEach((key) => {
         const val = form[key];
-        if (val && (typeof val === 'string' ? val.length > 1 : true)) {
-          fd.append(key, val);
+        if (val === undefined || val === null) return;
+        if (typeof val === 'object' && !(val instanceof File)) {
+          // stringify nested objects like adresse
+          try {
+            fd.append(key, JSON.stringify(val));
+          } catch (e) {
+            // fallback to string coercion
+            fd.append(key, String(val));
+          }
+        } else if (typeof val === 'string') {
+          if (val.length > 0) fd.append(key, val);
+        } else {
+          fd.append(key, val as any);
         }
       });
       body = fd;
@@ -131,7 +142,11 @@ export class AuthService {
       body = {};
       Object.keys(form).forEach((key) => {
         const val = form[key];
-        if (val && typeof val === 'string' && val.length > 1) {
+        if (val === undefined || val === null) return;
+        // include nested adresse object as-is
+        if (typeof val === 'object') {
+          (body as Record<string, any>)[key] = val;
+        } else if (typeof val === 'string' && val.length > 0) {
           (body as Record<string, any>)[key] = val;
         }
       });

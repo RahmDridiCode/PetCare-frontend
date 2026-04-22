@@ -7,7 +7,11 @@ export interface User {
   email: string;
   birthdate?: Date;
   phone?: string;
-  address?: String;
+  adresse?: {
+    street?: string;
+    ville?: string;
+    region?: string;
+  } | null;
   role?: string;
   isApproved?: boolean;
   username?: string;

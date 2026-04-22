@@ -52,6 +52,21 @@
           <input matInput formControlName="birthdate" type="date" />
         </mat-form-field>
 
+        <div formGroupName="adresse" class="row">
+          <mat-form-field appearance="outline" class="half-width">
+            <mat-label>Ville</mat-label>
+            <input matInput formControlName="ville" />
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="half-width">
+            <mat-label>Région</mat-label>
+            <input matInput formControlName="region" />
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Rue / Adresse</mat-label>
+            <input matInput formControlName="street" />
+          </mat-form-field>
+        </div>
+
         <div class="actions">
           <button mat-raised-button color="primary" type="submit" [disabled]="profileForm.invalid">
             Enregistrer

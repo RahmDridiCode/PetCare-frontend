@@ -125,6 +125,14 @@ export class HeaderComponent implements OnInit, OnDestroy {
       this.router.navigate(['/appointments/my']);
       return;
     }
+    if (n.actionType === 'report' ) {
+      this.router.navigate(['/admin/reports']);
+      return;
+    }
+    if (n.actionType === 'vet_request') {
+      this.router.navigate(['/admin/veterinarians']);
+      return;
+    }
     const post = n.postId;
     if (!post) return;
     const targetId = post._id || post;

@@ -108,6 +108,11 @@ export const routes: Routes = [
     canActivate: [authGuard],
   },
   {
+    path: 'chatbot',
+    loadComponent: () => import('./features/chatbot/chatbot.component').then(m => m.ChatbotComponent),
+    canActivate: [authGuard],
+  },
+  {
     path: 'post/:id',
     loadComponent: () => import('./features/publications/components/post-detail/post-detail.component').then(m => m.PostDetailComponent),
   },
