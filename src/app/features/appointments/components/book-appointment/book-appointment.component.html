@@ -1,40 +1,65 @@
 <div class="book-appt">
-    <form class="book-appt" (ngSubmit)="submit()" #appointmentForm="ngForm">
-        <h2>Book Appointment</h2>
+    <mat-card class="appt-card">
+        <div class="appt-grid">
+            <form class="appt-form" (ngSubmit)="submit()" #appointmentForm="ngForm">
+                <h2>Prendre rendez-vous</h2>
 
-        <div *ngIf="veterinarians.length === 0">
-            <p>No veterinarians available</p>
+                <div *ngIf="veterinarians.length === 0" class="empty">
+                    <p>Aucun vétérinaire disponible</p>
+                </div>
+
+                <mat-form-field *ngIf="veterinarians.length" appearance="outline" class="full">
+                    <mat-label>Choisir un vétérinaire</mat-label>
+                    <mat-select [(ngModel)]="veterinarianId" name="veterinarianId" required>
+                        <mat-option *ngFor="let v of veterinarians" [value]="v._id">
+                            <img [src]="v.image || 'assets/images/avatar.jpg'" alt="{{v.fname}}" class="vet-avatar" />
+                            <div class="vet-meta">
+                                <div class="vet-name">{{ v.fname }} {{ v.lname }}</div>
+                                <div *ngIf="v.ratingCount > 0" class="vet-rating">⭐ {{ v.rating.toFixed(1) }} ({{ v.ratingCount }})</div>
+                            </div>
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+
+                <div class="row">
+                    <mat-form-field appearance="outline" class="half">
+                        <mat-label>Date</mat-label>
+                        <input matInput [matDatepicker]="picker" [(ngModel)]="date" name="date" required />
+                        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                        <mat-datepicker #picker></mat-datepicker>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline" class="half">
+                        <mat-label>Heure</mat-label>
+                        <input matInput type="time" [(ngModel)]="time" name="time" required />
+                    </mat-form-field>
+                </div>
+
+                <div class="actions">
+                    <button mat-raised-button color="primary" type="submit" class="primary-btn" [disabled]="loading || !veterinarianId || !date || !time">
+                        Demander le rendez-vous
+                        <mat-icon class="btn-icon">event_available</mat-icon>
+                    </button>
+                </div>
+            </form>
+
+            <div class="preview" *ngIf="veterinarianId">
+                <mat-card class="vet-card" *ngIf="veterinarians.length">
+                      <ng-container *ngIf="selectedVeterinarian as sel">
+                        <div class="vet-header">
+                            <img [src]="sel.image || 'assets/images/avatar.jpg'" alt="{{sel.fname}}" class="vet-avatar-large" />
+                            <div>
+                                <div class="vet-name-large">{{ sel.fname }} {{ sel.lname }}</div>
+                                <div class="vet-sub">{{ sel.speciality || sel.city || '' }}</div>
+                                <div class="vet-rating-large" *ngIf="sel.ratingCount > 0">⭐ {{ sel.rating.toFixed(1) }} ({{ sel.ratingCount }})</div>
+                            </div>
+                        </div>
+                        <div class="vet-actions">
+                            <button mat-stroked-button color="primary" (click)="router.navigate(['/veterinarians', sel._id])">Voir le profil</button>
+                        </div>
+                    </ng-container>
+                </mat-card>
+            </div>
         </div>
-
-        <mat-form-field *ngIf="veterinarians.length" appearance="fill" style="width:100%">
-            <mat-label>Veterinarian</mat-label>
-            <mat-select [(ngModel)]="veterinarianId" name="veterinarianId" required>
-                <mat-option *ngFor="let v of veterinarians" [value]="v._id">
-                <img [src]="v.image || 'assets/images/avatar.jpg'" alt="{{v.fname}}" class="vet-avatar" />
-                <span>{{ v.fname }} {{ v.lname }}</span>
-                <span *ngIf="v.ratingCount > 0" class="vet-rating">
-                    ⭐ {{ v.rating.toFixed(1) }} ({{ v.ratingCount }})
-                </span>
-                </mat-option>
-            </mat-select>
-        </mat-form-field>
-
-        <mat-form-field appearance="fill">
-            <mat-label>Date</mat-label>
-            <input matInput [matDatepicker]="picker" [(ngModel)]="date" name="date" required />
-            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-            <mat-datepicker #picker></mat-datepicker>
-        </mat-form-field>
-
-        <mat-form-field appearance="fill">
-            <mat-label>Time</mat-label>
-            <input matInput type="time" [(ngModel)]="time" name="time" required />
-        </mat-form-field>
-
-        <div>
-            <button mat-raised-button color="primary" type="submit" [disabled]="loading || !veterinarianId || !date || !time">
-                Send Appointment
-            </button>
-        </div>
-    </form>
+    </mat-card>
 </div>

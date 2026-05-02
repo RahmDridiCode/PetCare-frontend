@@ -10,6 +10,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatCardModule } from '@angular/material/card';
+import { MatIconModule } from '@angular/material/icon';
 import { AppointmentService } from '../../../../core/services/appointment.service';
 import { AuthService } from '../../../../core/services/auth.service';
 import { take } from 'rxjs/operators';
@@ -26,6 +28,8 @@ import { take } from 'rxjs/operators';
     MatNativeDateModule,
     MatButtonModule,
     MatSelectModule,
+    MatCardModule,
+    MatIconModule,
     MatSnackBarModule,
   ],
   templateUrl: './book-appointment.component.html',
@@ -43,10 +47,14 @@ export class BookAppointmentComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private appt: AppointmentService,
-    private router: Router,
+    public router: Router,
     private auth: AuthService,
     private snack: MatSnackBar
   ) {}
+
+  get selectedVeterinarian() {
+    return this.veterinarians.find(v => v._id === this.veterinarianId) || null;
+  }
 
   ngOnInit(): void {
     this.auth.currentUser$.pipe(take(1)).subscribe((u) => {
@@ -74,9 +82,9 @@ export class BookAppointmentComponent implements OnInit {
   }
 
   submit(): void {
-    if (!this.veterinarianId) { this.snack.open('Please select a veterinarian', 'Close', { duration: 3000 }); return; }
-    if (!this.date) { this.snack.open('Please select a date', 'Close', { duration: 3000 }); return; }
-    if (!this.time) { this.snack.open('Please select a time', 'Close', { duration: 3000 }); return; }
+    if (!this.veterinarianId) { this.snack.open('Veuillez sélectionner un vétérinaire', 'Fermer', { duration: 3000 }); return; }
+    if (!this.date) { this.snack.open('Veuillez sélectionner une date', 'Fermer', { duration: 3000 }); return; }
+    if (!this.time) { this.snack.open('Veuillez sélectionner une heure', 'Fermer', { duration: 3000 }); return; }
 
     this.loading = true;
     const payload = {
@@ -88,13 +96,13 @@ export class BookAppointmentComponent implements OnInit {
     this.appt.createAppointment(payload).subscribe({
       next: () => {
         this.loading = false;
-        this.snack.open('Appointment requested successfully', 'Close', { duration: 3000 });
+        this.snack.open('Demande de rendez-vous envoyée', 'Fermer', { duration: 3000 });
         this.router.navigate(['/appointments/my']);
       },
       error: (err) => {
         this.loading = false;
-        const msg = err?.error?.message || 'Failed to create appointment';
-        this.snack.open(msg, 'Close', { duration: 4000 });
+        const msg = err?.error?.message || 'Échec de la création du rendez-vous';
+        this.snack.open(msg, 'Fermer', { duration: 4000 });
       },
     });
   }

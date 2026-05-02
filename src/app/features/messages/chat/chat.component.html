@@ -8,11 +8,12 @@
       </div>
     </div>
   </div>
-
   <div class="chat-input">
-    <input matInput placeholder="Type a message" [(ngModel)]="inputText" (keyup.enter)="send()" />
-    <button mat-icon-button type="button" color="primary" (click)="send()">
-      <mat-icon>send</mat-icon>
-    </button>
+    <div class="composer">
+      <input matInput placeholder="Écrire un message..." [(ngModel)]="inputText" (keydown.enter)="send()" />
+      <button mat-icon-button class="send-btn" color="primary" type="button" (click)="send()">
+        <mat-icon>send</mat-icon>
+      </button>
+    </div>
   </div>
 </div>

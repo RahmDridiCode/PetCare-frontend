@@ -16,3 +16,47 @@
     display: flex;
     align-items: center;
 }
+
+.book-appt {
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+}
+
+.appt-card {
+    width: 100%;
+    max-width: 980px;
+    padding: 16px;
+    border-radius: 12px;
+}
+
+.appt-grid {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 20px;
+    align-items: start;
+}
+
+.appt-form h2 {
+    margin: 0 0 12px 0;
+}
+
+.full { width: 100%; }
+.row { display: flex; gap: 12px; }
+.half { flex: 1; }
+
+.actions { margin-top: 16px; }
+.primary-btn { display:flex; align-items:center; gap:8px; }
+.btn-icon { font-size:18px; }
+
+.vet-avatar-large { width:72px; height:72px; border-radius:8px; object-fit:cover; margin-right:12px; }
+.vet-card { padding:12px; }
+.vet-header { display:flex; align-items:center; }
+.vet-name-large { font-weight:600; font-size:16px; }
+.vet-sub { color:#666; font-size:13px; margin-top:4px; }
+.vet-rating-large { margin-top:8px; color:#ffb400; }
+
+@media (max-width: 880px) {
+    .appt-grid { grid-template-columns: 1fr; }
+    .preview { order: -1; }
+}

@@ -125,6 +125,19 @@
   flex-shrink: 0;
 }
 
+/* Ensure menu buttons are layout-stable and badge positioned correctly */
+.pc-menu-btn {
+  position: relative;
+}
+.pc-menu-btn:focus { outline: none; }
+
+/* Tweak material badge position so it stays fixed on icon */
+.pc-menu-btn .mat-badge-content {
+  right: 6px !important;
+  top: 6px !important;
+  transform: none !important;
+}
+
 /* Chip utilisateur */
 .pc-user-chip {
   display: flex;

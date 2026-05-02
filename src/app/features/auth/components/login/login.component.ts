@@ -61,9 +61,6 @@ export class LoginComponent {
     });
   }
 
-  signInWithGoogle(): void {
-    // Google Sign-In integration placeholder
-    // Will be handled via @abacritt/angularx-social-login
-  }
+ 
 }
 

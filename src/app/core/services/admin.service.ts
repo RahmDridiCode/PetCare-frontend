@@ -25,6 +25,10 @@ export class AdminService {
     return this.http.get(`${this.api}/admin/users`);
   }
 
+  getStats(): Observable<any> {
+    return this.http.get(`${this.api}/admin/stats`);
+  }
+
   deleteUser(id: string): Observable<any> {
     return this.http.delete(`${this.api}/admin/users/${id}`);
   }

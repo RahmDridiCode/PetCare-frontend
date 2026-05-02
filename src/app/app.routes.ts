@@ -64,9 +64,10 @@ export const routes: Routes = [
   },
   {
     path: 'admin',
-    loadComponent: () => import('./features/admin/admin-dashboard/admin-dashboard.component').then(m => m.AdminDashboardComponent),
+    loadComponent: () => import('./features/admin/admin-layout/admin-layout.component').then(m => m.AdminLayoutComponent),
     canActivate: [adminGuard],
     children: [
+      { path: '', loadComponent: () => import('./features/admin/admin-dashboard/admin-dashboard.component').then((m: any) => m.AdminDashboardComponent) },
       { path: 'veterinarians', loadComponent: () => import('./features/admin/veterinarians/veterinarians.component').then(m => m.VeterinariansComponent) },
       { path: 'users', loadComponent: () => import('./features/admin/users/users.component').then(m => m.UsersComponent) },
       { path: 'users/:id/edit', loadComponent: () => import('./features/admin/users/user-edit.component').then(m => m.UserEditComponent) },
